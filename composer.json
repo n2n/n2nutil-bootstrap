@@ -19,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-            "n2nutil\\jquery\\": "src/app/n2nutil/bootstrap"
+            "n2nutil\\bootstrap\\": "src/app/n2nutil/bootstrap"
         }
     }
 }
