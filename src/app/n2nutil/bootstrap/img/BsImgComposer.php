@@ -10,7 +10,7 @@ use n2n\io\managed\File;
 use n2n\impl\web\ui\view\html\img\ImgSet;
 
 class BsImgComposer implements ImgComposer {
-	const BP_SM = 544;
+	const BP_SM = 576;
 	const BP_MD = 768;
 	const BP_LG = 992;
 	const BP_XL = 1200;
