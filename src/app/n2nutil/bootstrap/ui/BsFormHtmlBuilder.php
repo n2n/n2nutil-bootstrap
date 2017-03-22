@@ -81,6 +81,24 @@ class BsFormHtmlBuilder {
 				$bsConfig);
 	}
 	
+	public function selectGroup($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null,
+			bool $multiple = false) {
+		$this->view->out($this->getSelectGroup($propertyExpression, $options,$bsComposer, $label, $multiple));
+	}
+	
+	public function getSelectGroup($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null,
+			bool $multiple = false) {
+		$propertyPath = $this->createPropertyPath($propertyExpression);
+		$bsConfig = $this->createBsConfig($bsComposer);
+		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
+
+		return $this->createUiFormGroup($propertyPath,
+				$this->createUiLabel($propertyPath, $bsConfig, $label),
+				$this->ariaFormHtml->getSelect($propertyPath, $options, $bsConfig->isRequired(), $controlAttrs, $multiple),
+				$bsConfig);
+	}
+	
+	
 	public function inputPasswordGroup($propertyExpression, BsComposer $bsComposer = null, $label = null, 
 			bool $secret = true) {
 		$this->view->out($this->getInputPasswordGroup($propertyExpression, $bsComposer, $label, $secret));
@@ -507,6 +525,14 @@ class Bs {
 	}
 	
 	/**
+	 * @param bool $labelAttrsCleared
+	 * @return \n2nutil\bootstrap\ui\BsComposer
+	 */
+	public static function lAttrsClear(bool $labelAttrsCleared = true) {
+		return (new BsComposer())->lAttrsClear($labelAttrsCleared);
+	}
+	
+	/**
 	 * @param string $name
 	 * @param unknown $value
 	 * @return \n2nutil\bootstrap\ui\BsComposer
@@ -548,6 +574,14 @@ class Bs {
 	}
 	
 	/**
+	 * @param bool $controlAttrsCleared
+	 * @return \n2nutil\bootstrap\ui\BsComposer
+	 */
+	public static function cAttrsClear(bool $controlAttrsCleared = true) {
+		return (new BsComposer())->cAttrsClear($controlAttrsCleared);
+	}
+	
+	/**
 	 * @param string $labelClassName
 	 * @param string $containerClassName
 	 * @param string $labelOffsetClassName
@@ -562,7 +596,9 @@ class BsComposer {
 	private $required;
 	private $labelHidden;
 	private $labelAttrs;
+	private $labelAttrsCleared = false;
 	private $controlAttrs;
+	private $controlAttrsCleared = false;
 	private $autoPlaceholderUsed;
 	private $placeholder;
 	private $helpText;
@@ -583,6 +619,15 @@ class BsComposer {
 	 */
 	public function lHide(bool $labelHidden = true) { 
 		$this->labelHidden = $labelHidden;
+		return $this;
+	}
+	
+	/**
+	 * @param bool $labelAttrsCleared
+	 * @return \n2nutil\bootstrap\ui\BsComposer
+	 */
+	public function lAttrsClear(bool $labelAttrsCleared = true) {
+		$this->labelAttrsCleared = $labelAttrsCleared;
 		return $this;
 	}
 	
@@ -662,6 +707,15 @@ class BsComposer {
 	}
 	
 	/**
+	 * @param bool $controlAttrsCleared
+	 * @return \n2nutil\bootstrap\ui\BsComposer
+	 */
+	public function cAttrsClear(bool $controlAttrsCleared = true) {
+		$this->controlAttrsCleared = $controlAttrsCleared;
+		return $this;
+	}
+	
+	/**
 	 * @param string $labelClassName
 	 * @param string $containerClassName
 	 * @param string $labelOffsetClassName
@@ -690,8 +744,12 @@ class BsComposer {
 			if ($this->placeholder === null) $placeholder = $parentBsConfig->getPlaceholder();
 			if ($this->helpText === null) $helpText = $parentBsConfig->getHelpText();
 			if ($this->labelHidden === null) $labelHidden = $parentBsConfig->isLabelHidden();
-			$labelAttrs = HtmlUtils::mergeAttrs($parentBsConfig->getLabelAttrs(), $labelAttrs);
-			$controlAttrs = HtmlUtils::mergeAttrs($parentBsConfig->getControlAttrs(), $controlAttrs);
+			if (!$this->labelAttrsCleared) {
+				$labelAttrs = HtmlUtils::mergeAttrs($parentBsConfig->getLabelAttrs(), $labelAttrs);
+			}
+			if (!$this->controlAttrsCleared) {
+				$controlAttrs = HtmlUtils::mergeAttrs($parentBsConfig->getControlAttrs(), $controlAttrs);
+			}
 			if ($this->rowClassNames === null) $rowClassNames = $parentBsConfig->getRowClassNames();
 		}
 		
