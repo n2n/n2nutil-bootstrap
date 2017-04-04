@@ -151,7 +151,8 @@ class BsFormHtmlBuilder {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		
-		$uiLegend = $this->createUiLegend($propertyPath, $bsConfig, $label);
+		// change back do createUiLegend after flexbox fieldset bugfix
+		$uiLegend = $this->createUiLabel($propertyPath, $bsConfig, $label);
 		
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		$uiControl = new HtmlSnippet();
@@ -162,7 +163,43 @@ class BsFormHtmlBuilder {
 							false, $inline));
 		}
 		
-		return $this->createUiFormGroup($propertyPath, $uiLegend, $uiControl, $bsConfig, true);
+		return $this->createUiFormGroup($propertyPath, $uiLegend, $uiControl, $bsConfig, false);
+	}
+	
+	public function inputCheckboxesCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null) {
+		$this->view->out($this->getInputCheckboxesCheck($propertyExpression, $options, $bsComposer, $label));
+	}
+	
+	public function getInputCheckboxesCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null) {
+		return $this->createUiCheckboxesCheck($propertyExpression, $options, $bsComposer, $label, false);
+	}
+	
+	public function inputCheckboxesCheckInline($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null) {
+		$this->view->out($this->getInputCheckboxesCheckInline($propertyExpression, $options, $bsComposer, $label));
+	}
+	
+	public function getInputCheckboxesCheckInline($propertyExpression, array $options, $bsComposer, $label = null) {
+		return $this->createUiCheckboxesCheck($propertyExpression, $options, $bsComposer, $label, true);
+	}
+	
+	private function createUiCheckboxesCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label, bool $inline) {
+		$propertyPath = $this->createPropertyPath($propertyExpression);
+		$bsConfig = $this->createBsConfig($bsComposer);
+	
+		// change back do createUiLegend after flexbox fieldset bugfix
+		$uiLegend = $this->createUiLabel($propertyPath, $bsConfig, $label);
+	
+		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
+		$uiControl = new HtmlSnippet();
+		foreach ($options as $optionValue => $optionLabel) {
+			$fieldPropertyPath = $propertyPath->fieldExt($optionValue);
+			$uiControl->appendLn(
+					$this->createUiFormCheck($fieldPropertyPath, $bsConfig, $optionLabel,
+							$this->ariaFormHtml->getInputCheckbox($fieldPropertyPath, $optionValue, false, $controlAttrs),
+							false, $inline));
+		}
+	
+		return $this->createUiFormGroup($propertyPath, $uiLegend, $uiControl, $bsConfig, false);
 	}
 
 // 	public function formGroupWithFileAndLabel($propertyExpression, $label = null, $required = false,
@@ -259,32 +296,31 @@ class BsFormHtmlBuilder {
 		return $uiFormGroup;
 	}
 
-	
-	private function createUiFormGroup(PropertyPath $propertyPath = null, UiComponent $uiLabel = null, 
+	private function createUiFormGroup(PropertyPath $propertyPath = null, UiComponent $uiLabel = null,
 			UiComponent $uiControl, BsConfig $bsConfig, bool $fieldset = false) {
 		$rowClassNames = $bsConfig->getRowClassNames();
-				
+
 		$formGroupClassName = 'form-group';
 		if (!$this->inline && $rowClassNames !== null) {
 			$formGroupClassName .= ' row';
 		}
-		
+
 		$uiMessage = null;
 		if ($propertyPath !== null && $this->formHtml->meta()->hasErrors($propertyPath)) {
 			$formGroupClassName .= ' has-danger';
 			$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'form-control-feedback'));
 		}
-		
+
 		$uiFormGroup = new HtmlElement(($fieldset ? 'fieldset' : 'div'), array('class' => $formGroupClassName));
 		$uiFormGroup->appendLn();
-		
+
 		if ($uiLabel !== null) $uiFormGroup->appendLn($uiLabel);
-		
+
 		$uiContainer = $uiFormGroup;
-		
+
 		if ($this->inline || $rowClassNames === null) {
 			$uiFormGroup->appendLn($uiControl);
-			if ($uiMessage !== null) $uiFormGroup->appendLn($uiMessage); 
+			if ($uiMessage !== null) $uiFormGroup->appendLn($uiMessage);
 		} else {
 			$className = $rowClassNames['containerClassName'];
 			if ($uiLabel === null) {
@@ -293,13 +329,13 @@ class BsFormHtmlBuilder {
 			$uiFormGroup->appendLn($uiContainer = new HtmlElement('div', array('class' => $className), $uiControl));
 			if ($uiMessage !== null) $uiContainer->appendLn($uiMessage);
 		}
-		
+
 		if ($propertyPath !== null && null !== ($helpText = $bsConfig->getHelpText())) {
 			$uiContainer->appendLn(new HtmlElement('small', array(
-					'class' => 'form-text text-muted', 
+					'class' => 'form-text text-muted',
 					'id' => $this->buildHelpTextId($propertyPath)), $helpText));
 		}
-		
+
 		return $uiFormGroup;
 	}
 	
