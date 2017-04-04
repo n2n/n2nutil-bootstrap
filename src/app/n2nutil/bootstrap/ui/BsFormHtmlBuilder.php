@@ -8,6 +8,7 @@ use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
+use n2n\l10n\DynamicTextCollection;
 
 class BsFormHtmlBuilder {
 	private $view;
@@ -151,8 +152,8 @@ class BsFormHtmlBuilder {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		
-		// change back do createUiLegend after flexbox fieldset bugfix
-		$uiLegend = $this->createUiLabel($propertyPath, $bsConfig, $label);
+		// change back to legend tag after flexbox fieldset bugfix
+		$uiLegend = $this->createUiLegend($propertyPath, $bsConfig, $label, 'label');
 		
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		$uiControl = new HtmlSnippet();
@@ -186,8 +187,8 @@ class BsFormHtmlBuilder {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 	
-		// change back do createUiLegend after flexbox fieldset bugfix
-		$uiLegend = $this->createUiLabel($propertyPath, $bsConfig, $label);
+		// change back to legend tag after flexbox fieldset bugfix
+		$uiLegend = $this->createUiLegend($propertyPath, $bsConfig, $label, 'label');
 	
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		$uiControl = new HtmlSnippet();
@@ -339,12 +340,19 @@ class BsFormHtmlBuilder {
 		return $uiFormGroup;
 	}
 	
-	private function createUiLegend(PropertyPath $propertyPath, BsConfig $bsConfig, $label) {
+	private function createUiLegend(PropertyPath $propertyPath, BsConfig $bsConfig, string $label = null, 
+			string $tagName = 'legend') {
 		if ($label === null) {
 			$label = $this->formHtml->meta()->getLabel($propertyPath);
 		}
 		
-		return new HtmlElement('legend', $this->createLabelAttrs($propertyPath, $bsConfig, 'col-form-legend'), $label);
+		if ($bsConfig->isRequired()) {
+			$dtc = new DynamicTextCollection('n2n\impl\web\dispatch', $this->view->getN2nContext()->getN2nLocale());
+			$label = new HtmlSnippet($label, PHP_EOL, new HtmlElement('abbr',
+					array('title' => $dtc->translate('aria_required_label')), '*'));
+		}
+		
+		return new HtmlElement($tagName, $this->createLabelAttrs($propertyPath, $bsConfig, 'col-form-legend'), $label);
 	}
 	
 	private function createUiLabel(PropertyPath $propertyPath, BsConfig $bsConfig, $label) {
