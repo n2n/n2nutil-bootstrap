@@ -139,12 +139,19 @@ class BsImgComposer implements ImgComposer {
 		return $defImgSet;
 	}
 
-	private function combineImgSet($imgSet, $imgSet2, $mediaAttr) {
+	private function combineImgSet(ImgSet $imgSet, ImgSet $imgSet2, $mediaAttr) {
 		foreach ($imgSet2->getImageSourceSets() as $imageSourceSet) {
 			$imageSourceSet->setMediaAttr($mediaAttr);
 			$imgageSourceSets = $imgSet->getImageSourceSets();
 			array_unshift($imgageSourceSets, $imageSourceSet);
 			$imgSet->setImageSourceSets($imgageSourceSets);
+		}
+		
+		if ($imgSet->getDefaultWidthAttr() < $imgSet2->getDefaultWidthAttr()) {
+			$imgSet->setDefaultSrcAttr($imgSet2->getDefaultSrcAttr());
+			$imgSet->setDefaultAltAttr($imgSet2->getDefaultAltAttr());
+			$imgSet->setDefaultWidthAttr($imgSet2->getDefaultWidthAttr());
+			$imgSet->setDefaultHeightAttr($imgSet2->getDefaultHeightAttr());
 		}
 	}
 }
