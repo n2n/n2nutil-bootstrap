@@ -9,11 +9,13 @@ use n2n\impl\web\ui\view\html\HtmlUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use n2n\l10n\DynamicTextCollection;
+use n2nutil\jquery\datepicker\DatePickerHtmlBuilder;
 
 class BsFormHtmlBuilder {
 	private $view;
 	private $formHtml;
 	private $ariaFormHtml;
+	private $datePickerHtml;
 	
 	private $globalBsConfig;
 	private $inline = false;
@@ -22,6 +24,7 @@ class BsFormHtmlBuilder {
 		$this->view = $view;
 		$this->formHtml = $view->getFormHtmlBuilder();
 		$this->ariaFormHtml = $view->getAriaFormHtmlBuilder();
+		$this->datePickerHtml = new DatePickerHtmlBuilder($view);
 		
 		if ($bsComposer !== null) {
 			$this->globalBsConfig = $bsComposer->toBsConfig();
@@ -92,13 +95,27 @@ class BsFormHtmlBuilder {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
-
+		
 		return $this->createUiFormGroup($propertyPath,
 				$this->createUiLabel($propertyPath, $bsConfig, $label),
 				$this->ariaFormHtml->getSelect($propertyPath, $options, $bsConfig->isRequired(), $controlAttrs, $multiple),
 				$bsConfig);
 	}
 	
+	public function datePickerGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null) {
+		$this->view->out($this->getDatePickerGroup($propertyExpression, $bsComposer, $label));
+	}
+	
+	public function getDatePickerGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null) {
+		$propertyPath = $this->createPropertyPath($propertyExpression);
+		$bsConfig = $this->createBsConfig($bsComposer);
+		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
+		
+		return $this->createUiFormGroup($propertyPath,
+				$this->createUiLabel($propertyPath, $bsConfig, $label),
+				$this->datePickerHtml->getFormDatePicker($propertyPath, $controlAttrs),
+				$bsConfig);
+	}
 	
 	public function inputPasswordGroup($propertyExpression, BsComposer $bsComposer = null, $label = null, 
 			bool $secret = true) {
