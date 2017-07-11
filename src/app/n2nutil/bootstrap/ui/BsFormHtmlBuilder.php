@@ -117,6 +117,38 @@ class BsFormHtmlBuilder {
 				$bsConfig);
 	}
 	
+// 	public function inputFileWithLabelGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null) {
+// 		$this->view->out($this->getInputFileWithLabelGroup($propertyExpression, $bsComposer, $label));
+// 	}
+	
+// 	public function getInputFileWithLabelGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null) {
+// 		$propertyPath = $this->createPropertyPath($propertyExpression);
+// 		$bsConfig = $this->createBsConfig($bsComposer);
+// 		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
+		
+// 		return $this->createUiFormGroup($propertyPath,
+// 				$this->createUiLabel($propertyPath, $bsConfig, $label),
+// 				$this->formHtml->getInputFileWithLabel($propertyPath, $controlAttrs),
+// 				$bsConfig);
+// 	}
+	
+	public function inputFileWithLabelGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null,
+			array $fileLabelAttrs = null) {
+				$this->view->out($this->getInputFileWithLabelGroup($propertyExpression, $bsComposer, $label));
+	}
+	
+	public function getInputFileWithLabelGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null,
+			array $fileLabelAttrs = null) {
+				$propertyPath = $this->createPropertyPath($propertyExpression);
+				$bsConfig = $this->createBsConfig($bsComposer);
+				$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
+				
+				return $this->createUiFormGroup($propertyPath,
+						$this->createUiLabel($propertyPath, $bsConfig, $label),
+						$this->ariaFormHtml->getInputFileWithLabel($propertyPath, $bsConfig->isRequired(), $controlAttrs, $fileLabelAttrs),
+						$bsConfig);
+	}
+	
 	public function inputPasswordGroup($propertyExpression, BsComposer $bsComposer = null, $label = null, 
 			bool $secret = true) {
 		$this->view->out($this->getInputPasswordGroup($propertyExpression, $bsComposer, $label, $secret));
@@ -219,35 +251,6 @@ class BsFormHtmlBuilder {
 	
 		return $this->createUiFormGroup($propertyPath, $uiLegend, $uiControl, $bsConfig, false);
 	}
-
-// 	public function formGroupWithFileAndLabel($propertyExpression, $label = null, $required = false,
-// 			FormGroupConfig $formGroupConfig = null, array $fileLabelAttrs = null) {
-// 				$this->view->out($this->getFormGroupWithFileAndLabel($propertyExpression, $label, $required, $formGroupConfig, $fileLabelAttrs));
-// 	}
-	
-// 	public function getFormGroupWithFileAndLabel($propertyExpression, $label = null, $required = false,
-// 			FormGroupConfig $formGroupConfig = null, array $fileLabelAttrs = null) {
-// 		$controlAttrs = $this->improveControlAttrs(array('class' => 'input-file'), $formGroupConfig, $label);
-// 		return $this->createUiFormGroup(
-// 				$this->createLabel($propertyExpression, $label, $required, $formGroupConfig),
-// 				$this->ariaFormHtml->getInputFileWithLabel($propertyExpression, $controlAttrs, $fileLabelAttrs,
-// 				$required), $propertyExpression, $required, $formGroupConfig);
-// 	}
-	
-// 	public function getFormGroupWithSelect($propertyExpression, array $options, $label = null, $required = false, 
-// 			FormGroupConfig $formGroupConfig = null, $multiple = false) {
-// 		$controlAttrs = $this->improveControlAttrs(array('class' => 'form-control'), $formGroupConfig, null, false);
-// 		return $this->createUiFormGroup(
-// 				$this->createLabel($propertyExpression, $label, $required, $formGroupConfig),
-// 				$this->ariaFormHtml->getSelect($propertyExpression, $options, $controlAttrs, $required, $multiple), 
-// 				$propertyExpression, $required, $formGroupConfig);
-// 	}
-	
-// 	public function formGroupWithSelect($propertyExpression, array $options, $label = null, $required = false,
-// 			FormGroupConfig $formGroupConfig = null, $mutliple = false) {
-// 		$this->view->out($this->getFormGroupWithSelect($propertyExpression, $options, $label, 
-// 				$required, $formGroupConfig, $mutliple));
-// 	}
 	
 	public function textareaGroup($propertyExpression, BsComposer $bsComposer = null, $label = null) {
 		$this->view->out($this->getTextarea($propertyExpression, $bsComposer, $label));
