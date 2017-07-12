@@ -8,9 +8,14 @@
 	],
 	"homepage" : "https://n2n.rocks/",
 	"license" : "GNU LGPL",
-	"authors" : [{
+	"authors" : [
+		{
 			"name" : "Thomas Jansen",
 			"email" : "jansen@hnm.ch"
+		},
+		{
+			"name" : "Thomas Günther",
+			"email" : "guenther@hnm.ch"
 		}
 	],
 	"require" : {
