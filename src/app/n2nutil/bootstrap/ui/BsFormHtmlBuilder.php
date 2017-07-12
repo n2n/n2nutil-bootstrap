@@ -117,36 +117,21 @@ class BsFormHtmlBuilder {
 				$bsConfig);
 	}
 	
-// 	public function inputFileWithLabelGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null) {
-// 		$this->view->out($this->getInputFileWithLabelGroup($propertyExpression, $bsComposer, $label));
-// 	}
-	
-// 	public function getInputFileWithLabelGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null) {
-// 		$propertyPath = $this->createPropertyPath($propertyExpression);
-// 		$bsConfig = $this->createBsConfig($bsComposer);
-// 		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
-		
-// 		return $this->createUiFormGroup($propertyPath,
-// 				$this->createUiLabel($propertyPath, $bsConfig, $label),
-// 				$this->formHtml->getInputFileWithLabel($propertyPath, $controlAttrs),
-// 				$bsConfig);
-// 	}
-	
 	public function inputFileWithLabelGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null,
 			array $fileLabelAttrs = null) {
-				$this->view->out($this->getInputFileWithLabelGroup($propertyExpression, $bsComposer, $label));
+		$this->view->out($this->getInputFileWithLabelGroup($propertyExpression, $bsComposer, $label));
 	}
 	
 	public function getInputFileWithLabelGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null,
 			array $fileLabelAttrs = null) {
-				$propertyPath = $this->createPropertyPath($propertyExpression);
-				$bsConfig = $this->createBsConfig($bsComposer);
-				$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
-				
-				return $this->createUiFormGroup($propertyPath,
-						$this->createUiLabel($propertyPath, $bsConfig, $label),
-						$this->ariaFormHtml->getInputFileWithLabel($propertyPath, $bsConfig->isRequired(), $controlAttrs, $fileLabelAttrs),
-						$bsConfig);
+		$propertyPath = $this->createPropertyPath($propertyExpression);
+		$bsConfig = $this->createBsConfig($bsComposer);
+		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
+		
+		return $this->createUiFormGroup($propertyPath,
+				$this->createUiLabel($propertyPath, $bsConfig, $label),
+				$this->ariaFormHtml->getInputFileWithLabel($propertyPath, $bsConfig->isRequired(), $controlAttrs, $fileLabelAttrs),
+				$bsConfig);
 	}
 	
 	public function inputPasswordGroup($propertyExpression, BsComposer $bsComposer = null, $label = null, 
@@ -237,7 +222,7 @@ class BsFormHtmlBuilder {
 		$bsConfig = $this->createBsConfig($bsComposer);
 	
 		// change back to legend tag after flexbox fieldset bugfix
-		$uiLegend = $this->createUiLegend($propertyPath, $bsConfig, $label, 'label');
+		$uiLegend = $this->createUiLegend($propertyPath, $bsConfig, $label);
 	
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		$uiControl = new HtmlSnippet();
@@ -250,6 +235,21 @@ class BsFormHtmlBuilder {
 		}
 	
 		return $this->createUiFormGroup($propertyPath, $uiLegend, $uiControl, $bsConfig, false);
+	}
+	
+	public function inputCheckboxGroup($propertyExpression, $value, $checkboxLabel = null, BsComposer $bsComposer = null, $label = null) {
+		$this->view->out($this->getInputCheckboxGroup($propertyExpression, $value, $checkboxLabel, $bsComposer, $label));
+	}
+	
+	public function getInputCheckboxGroup($propertyExpression, $value, $checkboxLabel = null, BsComposer $bsComposer = null, $label = null) {
+		$propertyPath = $this->createPropertyPath($propertyExpression);
+		$bsConfig = $this->createBsConfig($bsComposer);
+		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
+		
+		return $this->createUiFormGroup($propertyPath,
+				$this->createUiLabel($propertyPath, $bsConfig, $label, true, ''),
+				$this->getInputCheckboxCheck($propertyExpression, $value, $bsComposer, (null === $checkboxLabel) ? '': $checkboxLabel),
+				$bsConfig);
 	}
 	
 	public function textareaGroup($propertyExpression, BsComposer $bsComposer = null, $label = null) {
@@ -374,10 +374,10 @@ class BsFormHtmlBuilder {
 		return new HtmlElement('legend', $this->createLabelAttrs($propertyPath, $bsConfig, 'col-form-legend'), $label);
 	}
 	
-	private function createUiLabel(PropertyPath $propertyPath, BsConfig $bsConfig, $label, bool $applyFor = true) {
+	private function createUiLabel(PropertyPath $propertyPath, BsConfig $bsConfig, $label, bool $applyFor = true, string $className = 'col-form-label') {
 		if ($applyFor) {
 			return $this->ariaFormHtml->getLabel($propertyPath, $bsConfig->isRequired(), $label, 
-					$this->createLabelAttrs($propertyPath, $bsConfig, 'col-form-label'));
+					$this->createLabelAttrs($propertyPath, $bsConfig, $className));
 		}
 		
 		if ($label === null) {
@@ -390,7 +390,7 @@ class BsFormHtmlBuilder {
 					array('title' => $dtc->translate('aria_required_label')), '*'));
 		}
 		
-		return new HtmlElement('label', $this->createLabelAttrs($propertyPath, $bsConfig, 'col-form-label'), $label);
+		return new HtmlElement('label', $this->createLabelAttrs($propertyPath, $bsConfig, $className), $label);
 	}
 	
 	private function createLabelAttrs(PropertyPath $propertyPath, BsConfig $bsConfig, string $className) {
