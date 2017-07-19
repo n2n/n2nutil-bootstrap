@@ -1,5 +1,5 @@
 <?php
-namespace app\n2nutil\bootstrap\ui;
+namespace n2nutil\bootstrap\ui;
 
 class Bs {
 	/**
