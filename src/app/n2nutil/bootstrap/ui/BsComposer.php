@@ -1,6 +1,8 @@
 <?php
 namespace n2nutil\bootstrap\ui;
 
+use n2n\impl\web\ui\view\html\HtmlUtils;
+
 class BsComposer {
 	private $required;
 	private $labelHidden;
