@@ -141,10 +141,10 @@ class BsComposer {
 	
 	public function toBsConfig(BsConfig $parentBsConfig = null) {
 		$required = $this->required ?? false;
-		$autoPlaceholder = $this->autoPlaceholderUsed ?? true;
 		$placeholder = $this->placeholder;
 		$helpText = $this->helpText;
 		$labelHidden = $this->labelHidden ?? false;
+		$autoPlaceholder = $this->autoPlaceholderUsed ?? $labelHidden ? true : false;
 		$labelAttrs = (array) $this->labelAttrs;
 		$controlAttrs = (array) $this->controlAttrs;
 		$rowClassNames = $this->rowClassNames;
