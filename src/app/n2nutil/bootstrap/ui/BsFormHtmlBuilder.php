@@ -126,7 +126,7 @@ class BsFormHtmlBuilder {
 			array $fileLabelAttrs = null) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
-		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
+		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig, null, 'form-control-file');
 		
 		return $this->createUiFormGroup($propertyPath,
 				$this->createUiLabel($propertyPath, $bsConfig, $label),
@@ -420,7 +420,8 @@ class BsFormHtmlBuilder {
 		return HtmlUtils::mergeAttrs($attrs, array('class' => 'form-check-input'), true);
 	}
 	
-	private function createFormControlAttrs(PropertyPath $propertyPath, BsConfig $bsConfig, array $additionalAttrs = null) {
+	private function createFormControlAttrs(PropertyPath $propertyPath, BsConfig $bsConfig, 
+			array $additionalAttrs = null, string $className = null) {
 		$attrs = $bsConfig->getControlAttrs();
 		
 		if ($additionalAttrs !== null) {
@@ -437,7 +438,9 @@ class BsFormHtmlBuilder {
 			$attrs['aria-describedby'] = $this->buildHelpTextId($propertyPath);
 		}
 		
-		$className = 'form-control';
+		if (null === $className) {
+			$className = 'form-control';
+		}
 		if ($this->formHtml->meta()->hasErrors($propertyPath)) {
 			$className .= ' form-control-danger';
 		}
