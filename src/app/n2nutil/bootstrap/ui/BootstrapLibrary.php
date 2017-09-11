@@ -7,10 +7,15 @@ use n2n\impl\web\ui\view\html\HtmlBuilderMeta;
 use n2nutil\jquery\JQueryLibrary;
 
 class BootstrapLibrary  extends LibraryAdapter {
-	private $loadBootstrapCss;
 	
-	public function __construct(bool $loadBootstrapCss = true) {
-		$this->loadBootstrapCss = $loadBootstrapCss; 
+	const VERSION = '4.0.0-alpha.6';
+	
+	private $loadBootstrapCss;
+	private $loadJs;
+	
+	public function __construct(bool $loadBootstrapCss = true, bool $loadJs = true) {
+		$this->loadBootstrapCss = $loadBootstrapCss;
+		$this->loadJs = $loadJs;
 	}
 	
 	/**
@@ -22,8 +27,10 @@ class BootstrapLibrary  extends LibraryAdapter {
 			$htmlMeta->addCss('dist/css/bootstrap.min.css', null, 'n2nutil\bootstrap');
 		}
 		
-		$htmlMeta->addLibrary(new JQueryLibrary(3, true));
-		$htmlMeta->bodyEnd()->addJs('js/tether.min.js', 'n2nutil\bootstrap');
-		$htmlMeta->bodyEnd()->addJs('dist/js/bootstrap.min.js', 'n2nutil\bootstrap');
+		if ($this->loadJs) {
+			$htmlMeta->addLibrary(new JQueryLibrary(3, true));
+			$htmlMeta->bodyEnd()->addJs('js/tether.min.js', 'n2nutil\bootstrap');
+			$htmlMeta->bodyEnd()->addJs('dist/js/bootstrap.min.js', 'n2nutil\bootstrap');
+		}
 	}
 }
