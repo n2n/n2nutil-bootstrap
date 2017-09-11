@@ -29,7 +29,7 @@ class BootstrapLibrary  extends LibraryAdapter {
 		
 		if ($this->loadJs) {
 			$htmlMeta->addLibrary(new JQueryLibrary(3, true));
-			$htmlMeta->bodyEnd()->addJs('js/tether.min.js', 'n2nutil\bootstrap');
+			$htmlMeta->bodyEnd()->addJs('assets/js/vendor/popper.min.js', 'n2nutil\bootstrap');
 			$htmlMeta->bodyEnd()->addJs('dist/js/bootstrap.min.js', 'n2nutil\bootstrap');
 		}
 	}
