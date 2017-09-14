@@ -12,10 +12,12 @@ class BootstrapLibrary  extends LibraryAdapter {
 	
 	private $loadBootstrapCss;
 	private $loadJs;
+	private $bodyEnd;
 	
-	public function __construct(bool $loadBootstrapCss = true, bool $loadJs = true) {
+	public function __construct(bool $loadBootstrapCss = true, bool $loadJs = true, bool $bodyEnd = true) {
 		$this->loadBootstrapCss = $loadBootstrapCss;
 		$this->loadJs = $loadJs;
+		$this->bodyEnd = $bodyEnd;
 	}
 	
 	/**
@@ -28,9 +30,12 @@ class BootstrapLibrary  extends LibraryAdapter {
 		}
 		
 		if ($this->loadJs) {
-			$htmlMeta->addLibrary(new JQueryLibrary(3, true));
-			$htmlMeta->bodyEnd()->addJs('assets/js/vendor/popper.min.js', 'n2nutil\bootstrap');
-			$htmlMeta->bodyEnd()->addJs('dist/js/bootstrap.min.js', 'n2nutil\bootstrap');
+			$htmlMeta->addLibrary(new JQueryLibrary(3, $this->bodyEnd));
+			if ($this->bodyEnd) {
+				$htmlMeta = $htmlMeta->bodyEnd();
+			}
+			$htmlMeta->addJs('assets/js/vendor/popper.min.js', 'n2nutil\bootstrap');
+			$htmlMeta->addJs('dist/js/bootstrap.min.js', 'n2nutil\bootstrap');
 		}
 	}
 }
