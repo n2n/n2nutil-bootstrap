@@ -14,6 +14,8 @@ class BsComposer {
 	private $placeholder;
 	private $helpText;
 	private $rowClassNames;
+	private $groupAttrs;
+	private $groupAttrsCleared = false;
 	
 	/**
 	 * @param bool $required
@@ -106,6 +108,34 @@ class BsComposer {
 		return $this;
 	}
 	
+	/**
+	 * @param array $groupAttrs
+	 * @return \n2nutil\bootstrap\ui\BsComposer
+	 */
+	public function gAttrs(array $groupAttrs) {
+		$this->groupAttrs = $groupAttrs;
+		return $this;
+	}
+	
+	/**
+	 * @param string $name
+	 * @param mixed $value
+	 * @return \n2nutil\bootstrap\ui\BsComposer
+	 */
+	public function gAttr(string $name, $value = null) {
+		$this->groupAttrs = $this->buildAttrs((array) $this->groupAttrs, $name, $value);
+		return $this;
+	}
+	
+	/**
+	 * @param bool $groupAttrsCleared
+	 * @return \n2nutil\bootstrap\ui\BsComposer
+	 */
+	public function gAttrsClear(bool $groupAttrsCleared = true) {
+		$this->groupAttrsCleared = $groupAttrsCleared;
+		return $this;
+	}
+	
 	private function buildAttrs(array $attrs, string $name, $value) {
 		$newAttrs = null;
 		if ($value === null) {
@@ -148,6 +178,7 @@ class BsComposer {
 		$labelAttrs = (array) $this->labelAttrs;
 		$controlAttrs = (array) $this->controlAttrs;
 		$rowClassNames = $this->rowClassNames;
+		$groupAttrs = (array) $this->groupAttrs;
 		
 		if ($parentBsConfig !== null) {
 			if ($this->required === null) $required = $parentBsConfig->isRequired();
@@ -161,10 +192,14 @@ class BsComposer {
 			if (!$this->controlAttrsCleared) {
 				$controlAttrs = HtmlUtils::mergeAttrs($parentBsConfig->getControlAttrs(), $controlAttrs);
 			}
+			
+			if (!$this->groupAttrsCleared) {
+				$groupAttrs = HtmlUtils::mergeAttrs($parentBsConfig->getGroupAttrs(), $groupAttrs);
+			}
 			if ($this->rowClassNames === null) $rowClassNames = $parentBsConfig->getRowClassNames();
 		}
 		
 		return new BsConfig($required, $autoPlaceholder, $placeholder, $helpText, $labelHidden, $labelAttrs,
-				$controlAttrs, $rowClassNames);
+				$controlAttrs, $groupAttrs, $rowClassNames);
 	}
 }

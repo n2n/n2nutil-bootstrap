@@ -320,10 +320,14 @@ class BsFormHtmlBuilder {
 	private function createUiFormGroup(PropertyPath $propertyPath = null, UiComponent $uiLabel = null,
 			UiComponent $uiControl, BsConfig $bsConfig, bool $fieldset = false) {
 		$rowClassNames = $bsConfig->getRowClassNames();
+		$groupAttrs = $bsConfig->getGroupAttrs();
 
-		$formGroupClassName = 'form-group';
-		if (!$this->inline && $rowClassNames !== null) {
-			$formGroupClassName .= ' row';
+		$formGroupClassName = null;
+		if (!isset($groupAttrs['class'])) {
+			$formGroupClassName = 'form-group';
+			if (!$this->inline && $rowClassNames !== null) {
+				$formGroupClassName .= ' row';
+			}
 		}
 
 		$uiMessage = null;
@@ -332,7 +336,8 @@ class BsFormHtmlBuilder {
 			$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'form-control-feedback'));
 		}
 
-		$uiFormGroup = new HtmlElement(($fieldset ? 'fieldset' : 'div'), array('class' => $formGroupClassName));
+		$uiFormGroup = new HtmlElement(($fieldset ? 'fieldset' : 'div'), 
+				HtmlUtils::mergeAttrs(array('class' => $formGroupClassName), $groupAttrs));
 		$uiFormGroup->appendLn();
 
 		if ($uiLabel !== null) $uiFormGroup->appendLn($uiLabel);
