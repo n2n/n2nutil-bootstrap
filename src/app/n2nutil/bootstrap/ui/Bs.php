@@ -92,6 +92,30 @@ class Bs {
 	}
 	
 	/**
+	 * @param array $groupAttrs
+	 * @return \n2nutil\bootstrap\ui\BsComposer
+	 */
+	public static function gAttrs(array $groupAttrs) {
+		return (new BsComposer())->gAttrs($groupAttrs);
+	}
+	
+	/**
+	 * @param string $name
+	 * @param mixed $value
+	 * @return \n2nutil\bootstrap\ui\BsComposer
+	 */
+	public static function gAttr(string $name, $value = null) {
+		return (new BsComposer())->gAttr($name, $value);
+	}
+	
+	/**
+	 * @param bool $groupAttrsCleared
+	 * @return \n2nutil\bootstrap\ui\BsComposer
+	 */
+	public static function gAttrsClear(bool $groupAttrsCleared = true) {
+		return (new BsComposer())->gAttrsClear($groupAttrsCleared);
+	}
+	/**
 	 * @param string $labelClassName
 	 * @param string $containerClassName
 	 * @param string $labelOffsetClassName

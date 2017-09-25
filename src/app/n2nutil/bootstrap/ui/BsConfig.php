@@ -9,18 +9,20 @@ class BsConfig {
 	protected $labelHidden;
 	protected $labelAttrs;
 	protected $controlAttrs;
+	protected $groupAttrs;
 	protected $rowClassNames;
 	
 	public function __construct(bool $required, bool $autoPlaceholder, string $placeholder = null,
-			$helpText = null, bool $labelHidden, array $labelAttrs, array $controlAttrs, array $rowClassNames = null) {
-				$this->required = $required;
-				$this->autoPlaceholder = $autoPlaceholder;
-				$this->placeholder = $placeholder;
-				$this->helpText = $helpText;
-				$this->labelHidden = $labelHidden;
-				$this->labelAttrs = $labelAttrs;
-				$this->controlAttrs = $controlAttrs;
-				$this->rowClassNames = $rowClassNames;
+			$helpText = null, bool $labelHidden, array $labelAttrs, array $controlAttrs, array $groupAttrs, array $rowClassNames = null) {
+		$this->required = $required;
+		$this->autoPlaceholder = $autoPlaceholder;
+		$this->placeholder = $placeholder;
+		$this->helpText = $helpText;
+		$this->labelHidden = $labelHidden;
+		$this->labelAttrs = $labelAttrs;
+		$this->controlAttrs = $controlAttrs;
+		$this->groupAttrs = $groupAttrs;
+		$this->rowClassNames = $rowClassNames;
 	}
 	
 	public function isRequired() {
@@ -49,6 +51,10 @@ class BsConfig {
 	
 	public function getControlAttrs() {
 		return $this->controlAttrs;
+	}
+	
+	public function getGroupAttrs() {
+		return $this->groupAttrs;
 	}
 	
 	public function getRowClassNames() {
