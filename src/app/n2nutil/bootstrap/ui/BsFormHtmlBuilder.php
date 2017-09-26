@@ -10,6 +10,7 @@ use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use n2n\l10n\DynamicTextCollection;
 use n2nutil\jquery\datepicker\DatePickerHtmlBuilder;
+use n2n\reflection\ArgUtils;
 
 class BsFormHtmlBuilder {
 	private $view;
@@ -66,6 +67,30 @@ class BsFormHtmlBuilder {
 		}
 		
 		return (new BsComposer())->toBsConfig();
+	}
+	
+	public function staticGroup($propertyExpression = null, $fixedValue = null, BsComposer $bsComposer = null, $label = null) {
+		return $this->view->out($this->getStaticGroup($propertyExpression, $fixedValue, $bsComposer, $label));
+	}
+	
+	public function getStaticGroup($propertyExpression = null, $fixedValue = null, BsComposer $bsComposer = null, $label = null) {
+		ArgUtils::assertTrue(null !== $propertyExpression || null !== $fixedValue);
+		$propertyPath = null;
+		$value = $fixedValue;
+		
+		if (null !== $propertyExpression) {
+			$propertyPath = $this->createPropertyPath($propertyExpression);
+			if (null === $value) {
+				$value = $this->formHtml->meta()->getMapValue($propertyExpression);
+			}
+		}
+		
+		$bsConfig = $this->createBsConfig($bsComposer);
+		$uiControl = new HtmlElement('p', array('class' => 'form-control-static'), $value);
+		
+		return $this->createUiFormGroup($propertyPath,
+				$this->createUiLabel($propertyPath, $bsConfig, $label),
+				$uiControl, $bsConfig);
 	}
 	
 	public function inputGroup($propertyExpression, BsComposer $bsComposer = null, $label = null, 
@@ -320,14 +345,10 @@ class BsFormHtmlBuilder {
 	private function createUiFormGroup(PropertyPath $propertyPath = null, UiComponent $uiLabel = null,
 			UiComponent $uiControl, BsConfig $bsConfig, bool $fieldset = false) {
 		$rowClassNames = $bsConfig->getRowClassNames();
-		$groupAttrs = $bsConfig->getGroupAttrs();
 
-		$formGroupClassName = null;
-		if (!isset($groupAttrs['class'])) {
-			$formGroupClassName = 'form-group';
-			if (!$this->inline && $rowClassNames !== null) {
-				$formGroupClassName .= ' row';
-			}
+		$formGroupClassName = 'form-group';
+		if (!$this->inline && $rowClassNames !== null) {
+			$formGroupClassName .= ' row';
 		}
 
 		$uiMessage = null;
@@ -336,8 +357,7 @@ class BsFormHtmlBuilder {
 			$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'form-control-feedback'));
 		}
 
-		$uiFormGroup = new HtmlElement(($fieldset ? 'fieldset' : 'div'), 
-				HtmlUtils::mergeAttrs(array('class' => $formGroupClassName), $groupAttrs));
+		$uiFormGroup = new HtmlElement(($fieldset ? 'fieldset' : 'div'), array('class' => $formGroupClassName));
 		$uiFormGroup->appendLn();
 
 		if ($uiLabel !== null) $uiFormGroup->appendLn($uiLabel);
