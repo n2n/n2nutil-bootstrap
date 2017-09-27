@@ -1,5 +1,5 @@
 # CHANGELOG
 
-## 4.0.x
+## v4.0.0-beta
 
-- update to current bootstrap dev version 27.09.2017 11:35
+- update to bootstrap version v4.0.0-beta
