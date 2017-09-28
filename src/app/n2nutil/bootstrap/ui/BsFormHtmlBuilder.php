@@ -345,25 +345,30 @@ class BsFormHtmlBuilder {
 	private function createUiFormGroup(PropertyPath $propertyPath = null, UiComponent $uiLabel = null,
 			UiComponent $uiControl, BsConfig $bsConfig, bool $fieldset = false) {
 		$rowClassNames = $bsConfig->getRowClassNames();
-
-		$formGroupClassName = 'form-group';
-		if (!$this->inline && $rowClassNames !== null) {
-			$formGroupClassName .= ' row';
+		$groupAttrs = $bsConfig->getGroupAttrs();
+		
+		$formGroupClassNames = array();
+		if (!isset($groupAttrs['class'])) {
+			$formGroupClassNames[] = 'form-group';
+			if (!$this->inline && $rowClassNames !== null) {
+				$formGroupClassNames[] = 'row';
+			}
 		}
-
+		
 		$uiMessage = null;
 		if ($propertyPath !== null && $this->formHtml->meta()->hasErrors($propertyPath)) {
-			$formGroupClassName .= ' has-danger';
+			$formGroupClassNames[] = 'has-danger';
 			$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'form-control-feedback'));
 		}
-
-		$uiFormGroup = new HtmlElement(($fieldset ? 'fieldset' : 'div'), array('class' => $formGroupClassName));
+		
+		$uiFormGroup = new HtmlElement(($fieldset ? 'fieldset' : 'div'),
+				HtmlUtils::mergeAttrs(array('class' => implode(' ', $formGroupClassNames)), $groupAttrs));
 		$uiFormGroup->appendLn();
-
+		
 		if ($uiLabel !== null) $uiFormGroup->appendLn($uiLabel);
-
+		
 		$uiContainer = $uiFormGroup;
-
+		
 		if ($this->inline || $rowClassNames === null) {
 			$uiFormGroup->appendLn($uiControl);
 			if ($uiMessage !== null) $uiFormGroup->appendLn($uiMessage);
@@ -375,13 +380,13 @@ class BsFormHtmlBuilder {
 			$uiFormGroup->appendLn($uiContainer = new HtmlElement('div', array('class' => $className), $uiControl));
 			if ($uiMessage !== null) $uiContainer->appendLn($uiMessage);
 		}
-
+		
 		if ($propertyPath !== null && null !== ($helpText = $bsConfig->getHelpText())) {
 			$uiContainer->appendLn(new HtmlElement('small', array(
 					'class' => 'form-text text-muted',
 					'id' => $this->buildHelpTextId($propertyPath)), $helpText));
 		}
-
+		
 		return $uiFormGroup;
 	}
 	
