@@ -119,7 +119,7 @@ class BsFormHtmlBuilder {
 			bool $multiple = false) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
-		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
+		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig, null, null, false);
 		
 		return $this->createUiFormGroup($propertyPath,
 				$this->createUiLabel($propertyPath, $bsConfig, $label),
@@ -451,17 +451,19 @@ class BsFormHtmlBuilder {
 	}
 	
 	private function createFormControlAttrs(PropertyPath $propertyPath, BsConfig $bsConfig, 
-			array $additionalAttrs = null, string $className = null) {
+			array $additionalAttrs = null, string $className = null, $applyPlaceholder = true) {
 		$attrs = $bsConfig->getControlAttrs();
 		
 		if ($additionalAttrs !== null) {
 			$attrs = HtmlUtils::mergeAttrs($additionalAttrs, $attrs);
 		}
 		
-		if (null !== ($placeholder = $bsConfig->getPlaceholder())) {
-			$attrs['placeholder'] = $placeholder;
-		} else if ($bsConfig->isAutoPlaceholderUsed()) {
-			$attrs['placeholder'] = $this->formHtml->meta()->getLabel($propertyPath);	
+		if ($applyPlaceholder) {
+			if (null !== ($placeholder = $bsConfig->getPlaceholder())) {
+				$attrs['placeholder'] = $placeholder;
+			} else if ($bsConfig->isAutoPlaceholderUsed()) {
+				$attrs['placeholder'] = $this->formHtml->meta()->getLabel($propertyPath);	
+			}
 		}
 		
 		if (null !== $bsConfig->getHelpText() && !$this->formHtml->meta()->hasErrors($propertyPath, false)) {
