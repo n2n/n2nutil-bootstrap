@@ -16,7 +16,8 @@ class BsComposer {
 	private $rowClassNames;
 	private $groupAttrs;
 	private $groupAttrsCleared = false;
-	
+	private $child;
+
 	/**
 	 * @param bool $required
 	 * @return \n2nutil\bootstrap\ui\BsComposer
@@ -200,6 +201,16 @@ class BsComposer {
 		}
 		
 		return new BsConfig($required, $autoPlaceholder, $placeholder, $helpText, $labelHidden, $labelAttrs,
-				$controlAttrs, $groupAttrs, $rowClassNames);
+				$controlAttrs, $groupAttrs, $rowClassNames, $this->child);
+	}
+
+	public function child(BsComposer $bsComposer = null) {
+		$this->child = $bsComposer;
+		return $this;
+	}
+
+	public function removeChild() {
+		$this->child = null;
+		return $this;
 	}
 }
