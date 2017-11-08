@@ -9,7 +9,6 @@ use n2n\web\ui\UiComponent;
 use n2nutil\bootstrap\ui\BsConfig;
 
 class BsUiOutfitter implements UiOutfitter {
-
 	private $bsConfig;
 	private $outfitConfig;
 	private $propertyPath;

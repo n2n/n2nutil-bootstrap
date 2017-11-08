@@ -22,7 +22,7 @@ class Outfit {
 	}
 
 	/**
-	 * @param BsComposer $outfitComposer
+	 * @param OutfitComposer $outfitComposer
 	 * @return mixed
 	 */
 	public static function child(OutfitComposer $outfitComposer) {
