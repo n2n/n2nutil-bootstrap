@@ -124,4 +124,8 @@ class Bs {
 	public static function row(string $labelClassName, string $containerClassName, string $labelOffsetClassName) {
 		return (new BsComposer())->row($labelClassName, $containerClassName, $labelOffsetClassName);
 	}
+
+	public static function child(BsComposer $bsComposer) {
+		return (new BsComposer())->child($bsComposer);
+	}
 }

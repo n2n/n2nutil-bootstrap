@@ -1,6 +1,8 @@
 <?php
 namespace n2nutil\bootstrap\ui;
 
+use n2n\web\dispatch\mag\Mag;
+use n2n\web\dispatch\mag\UiOutfitter;
 use n2n\web\ui\UiComponent;
 use n2n\web\dispatch\Dispatchable;
 use n2n\impl\web\ui\view\html\HtmlView;
@@ -9,6 +11,9 @@ use n2n\impl\web\ui\view\html\HtmlUtils;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 use n2n\l10n\DynamicTextCollection;
+use n2nutil\bootstrap\mag\OutfitComposer;
+use n2nutil\bootstrap\mag\BsUiOutfitter;
+use n2nutil\bootstrap\mag\OutfitConfig;
 use n2nutil\jquery\datepicker\DatePickerHtmlBuilder;
 use n2n\reflection\ArgUtils;
 
@@ -20,16 +25,28 @@ class BsFormHtmlBuilder {
 	
 	private $globalBsConfig;
 	private $inline = false;
-	
-	public function __construct(HtmlView $view, BsComposer $bsComposer = null) {
+
+	/**
+	 * BsFormHtmlBuilder constructor.
+	 * @param HtmlView $view
+	 * @param BsComposer|BsConfig|null $bsComposer
+	 */
+	public function __construct(HtmlView $view, $bsComposer = null) {
 		$this->view = $view;
 		$this->formHtml = $view->getFormHtmlBuilder();
 		$this->ariaFormHtml = $view->getAriaFormHtmlBuilder();
 		$this->datePickerHtml = new DatePickerHtmlBuilder($view);
-		
-		if ($bsComposer !== null) {
+
+		if (null === $bsComposer) return;
+
+		ArgUtils::valType($bsComposer, array(BsComposer::class, BsConfig::class));
+
+		if ($bsComposer instanceof BsComposer) {
 			$this->globalBsConfig = $bsComposer->toBsConfig();
+		} else if ($bsComposer instanceof BsConfig) {
+			$this->globalBsConfig = $bsComposer;
 		}
+
 		
 // @todo auto detect already added bs libraries 
 // 		$view->getHtmlBuilder()->meta()->addLibrary(new BootstrapLibrary());
@@ -56,9 +73,13 @@ class BsFormHtmlBuilder {
 	private function createPropertyPath($propertyExpression) {
 		return $this->formHtml->meta()->createPropertyPath($propertyExpression, true);
 	}
-	
-	private function createBsConfig(BsComposer $bsComposer = null) {
-		if ($bsComposer !== null) {
+
+	/**
+	 * @param null $bsComposer
+	 * @return BsComposer|BsConfig|null
+	 */
+	private function createBsConfig($bsComposer = null) {
+		if ($bsComposer instanceof BsComposer && $bsComposer !== null) {
 			return $bsComposer->toBsConfig($this->globalBsConfig);
 		}
 		
@@ -124,7 +145,7 @@ class BsFormHtmlBuilder {
 		return $this->createUiFormGroup($propertyPath,
 				$this->createUiLabel($propertyPath, $bsConfig, $label),
 				$this->ariaFormHtml->getSelect($propertyPath, $options, $bsConfig->isRequired(), $controlAttrs, $multiple),
-				$bsConfig);
+				$bsConfig, true);
 	}
 	
 	public function datePickerGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null) {
@@ -342,11 +363,19 @@ class BsFormHtmlBuilder {
 		return $uiFormGroup;
 	}
 
+	/**
+	 * @param PropertyPath|null $propertyPath
+	 * @param UiComponent|null $uiLabel
+	 * @param UiComponent $uiControl
+	 * @param BsConfig $bsConfig
+	 * @param bool $fieldset
+	 * @return HtmlElement
+	 */
 	private function createUiFormGroup(PropertyPath $propertyPath = null, UiComponent $uiLabel = null,
 			UiComponent $uiControl, BsConfig $bsConfig, bool $fieldset = false) {
 		$rowClassNames = $bsConfig->getRowClassNames();
 		$groupAttrs = $bsConfig->getGroupAttrs();
-		
+
 		$formGroupClassNames = array();
 		if (!isset($groupAttrs['class'])) {
 			$formGroupClassNames[] = 'form-group';
@@ -489,11 +518,70 @@ class BsFormHtmlBuilder {
 		}
 		return $this->ids[$key] = $this->formHtml->meta()->getForm()->buildId($propertyPath, 'helptext');
 	}
-	
 
-	
+	// adventure zone
 
+	/**
+	 * @param null $propertyExpression
+	 * @param BsComposer|BsConfig|null $bsComposer
+	 * @param OutfitComposer|OutfitConfig|null $outfitComposer
+	 */
+	public function magGroup($propertyExpression = null, $bsComposer = null, $outfitComposer = null) {
+		$this->view->out($this->getMagGroup($propertyExpression, $bsComposer, $outfitComposer));
+	}
 
+	/**
+	 * @param null $propertyExpression
+	 * @param BsComposer|BsConfig|null $bsComposer
+	 * @param OutfitComposer|OutfitConfig|null $outfitComposer
+	 * @return HtmlElement
+	 */
+	public function getMagGroup($propertyExpression = null, $bsComposer = null, $outfitComposer = null) {
+
+		$bsConfig = $this->createBsConfig($bsComposer);
+
+		$propertyPath = $this->createPropertyPath($propertyExpression);
+
+		$outfitConfig = null;
+		if ($outfitComposer instanceof OutfitConfig) {
+			$outfitConfig = $outfitComposer;
+		} elseif ($outfitComposer !== null) {
+			$outfitConfig = $outfitComposer->toConfig();
+		}
+
+		$controlAttrs = array();
+		$checkControlAttrs = array();
+		if ($bsComposer !== null) {
+			$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
+			$checkControlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
+		}
+
+		$magWrapper = $this->formHtml->meta()->lookupMagWrapper($propertyPath);
+		$mag = $magWrapper->getMag();
+		$containerAttrs = $magWrapper->getContainerAttrs($this->view);
+
+		$bsUiOutfitter = new BsUiOutfitter($outfitConfig, $bsConfig, $propertyPath, $controlAttrs, $checkControlAttrs);
+		$nature = $mag->getNature();
+
+		$uiLabel = null;
+		if ($nature & Mag::NATURE_GROUP) {
+			$uiLabel = $this->createUiLegend($propertyPath, $bsConfig, $mag->getLabel($this->view->getN2nLocale()));
+			$uiLabel->setAttrs(HtmlUtils::mergeAttrs($uiLabel->getAttrs(), $bsUiOutfitter->buildAttrs(UiOutfitter::NATURE_LEGEND)));
+		} else if (!($nature & Mag::NATURE_LABELLESS)) {
+			$uiLabel = $this->createUiLabel($propertyPath, $bsConfig, $mag->getLabel($this->view->getN2nLocale()));
+		}
+
+		$uiControl = $magWrapper->getMag()->createUiField($propertyPath, $this->view, $bsUiOutfitter);
+
+		$htmlElement = $this->createUiFormGroup($propertyPath, $uiLabel, $uiControl, $bsConfig);
+		$htmlElement->setAttrs(HtmlUtils::mergeAttrs($containerAttrs, $htmlElement->getAttrs()));
+
+		if ($nature & Mag::NATURE_GROUP) {
+			$htmlElement = new HtmlElement('fieldset', null, $htmlElement);
+		}
+
+		return $htmlElement;
+	}
 
 // 	public function getFormGroupWithCheckboxes($propertyExpression, array $options,
 // 			$label = null, $required = false, FormGroupConfig $formGroupConfig = null, $inline = false) {
