@@ -15,8 +15,8 @@ class BsUiOutfitter implements UiOutfitter {
 	private $controlAttrs;
 	private $checkControlAttrs;
 
-	public function __construct(OutfitConfig $outfitConfig = null, BsConfig $bsConfig = null, PropertyPath $propertyPath,
-			array $controlAttrs = array(), array $checkControlAttrs = array()) {
+	public function __construct(OutfitConfig $outfitConfig = null, BsConfig $bsConfig = null, 
+			PropertyPath $propertyPath = null, array $controlAttrs = array(), array $checkControlAttrs = array()) {
 		$this->outfitConfig = $outfitConfig;
 		$this->bsConfig = $bsConfig;
 		$this->propertyPath = $propertyPath;
