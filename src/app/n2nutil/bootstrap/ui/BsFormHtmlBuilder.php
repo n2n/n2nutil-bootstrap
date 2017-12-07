@@ -333,8 +333,8 @@ class BsFormHtmlBuilder {
 		$labelAttrs = HtmlUtils::mergeAttrs($labelAttrs, array('class' => 'form-check-label'));
 		
 		if ($displayErrors && $this->formHtml->meta()->hasErrors($propertyPath)) {
-			$formCheckClass .= ' has-danger';
-			$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'form-control-feedback'));
+			$formCheckClass .= ' is-invalid';
+			$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'invalid-feedback'));
 		}
 		
 		if ($inline) {
@@ -386,7 +386,6 @@ class BsFormHtmlBuilder {
 		
 		$uiMessage = null;
 		if ($propertyPath !== null && $this->formHtml->meta()->hasErrors($propertyPath)) {
-			$formGroupClassNames[] = 'has-danger';
 			$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'form-control-feedback'));
 		}
 		
@@ -503,7 +502,7 @@ class BsFormHtmlBuilder {
 			$className = 'form-control';
 		}
 		if ($this->formHtml->meta()->hasErrors($propertyPath)) {
-			$className .= ' form-control-danger';
+			$className .= ' is-invalid';
 		}
 		
 		return HtmlUtils::mergeAttrs($attrs, array('class' => $className), true);
