@@ -493,18 +493,19 @@ class BsFormHtmlBuilder {
 				$attrs['placeholder'] = $this->formHtml->meta()->getLabel($propertyPath);	
 			}
 		}
-		
+
 		if (null !== $bsConfig->getHelpText() && !$this->formHtml->meta()->hasErrors($propertyPath, false)) {
 			$attrs['aria-describedby'] = $this->buildHelpTextId($propertyPath);
 		}
-		
+
 		if (null === $className) {
 			$className = 'form-control';
 		}
+
 		if ($this->formHtml->meta()->hasErrors($propertyPath)) {
 			$className .= ' is-invalid';
 		}
-		
+
 		return HtmlUtils::mergeAttrs($attrs, array('class' => $className), true);
 	}
 	

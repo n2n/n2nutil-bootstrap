@@ -1,6 +1,7 @@
 <?php
 namespace n2nutil\bootstrap\mag;
 
+use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use n2n\impl\web\ui\view\html\HtmlView;
 use n2n\web\dispatch\mag\UiOutfitter;
@@ -54,6 +55,20 @@ class BsUiOutfitter implements UiOutfitter {
 		}
 
 		return $attrs;
+	}
+
+	/**
+	 * @param int $elemNature
+	 * @return HtmlElement
+	 */
+	public function buildElement(int $elemNature, array $attrs = null, $contents = null): HtmlElement {
+		if ($elemNature & self::EL_NATRUE_CONTROL_ADDON_SUFFIX_WRAPPER) {
+			return new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'input-group'), $attrs), $contents);
+		}
+
+		if ($elemNature & self::EL_NATURE_CONTROL_ADDON_WRAPPER) {
+			return new HtmlElement('span', HtmlUtils::mergeAttrs(array('class' => 'input-group-addon'), $attrs), $contents);
+		}
 	}
 
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
