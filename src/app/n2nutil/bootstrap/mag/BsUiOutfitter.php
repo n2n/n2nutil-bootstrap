@@ -74,7 +74,12 @@ class BsUiOutfitter implements UiOutfitter {
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
 		$bsChild = $this->bsConfig->getChild();
 		$bs = (null !== $bsChild) ? $bsChild : $this->bsConfig;
-
+		
+		if ($this->outfitConfig === null) {
+			return $contextView->getImport('\n2nutil\bootstrap\mag\bsMagForm.html',
+					array('propertyPath' => $propertyPath, 'bs' => $bs, 'uiOutfitter' => $this, 'outfit' => null));
+		}
+		
 		$outfitChild = $this->outfitConfig->getChild();
 		$outfit = (null !== $outfitChild) ? $outfitChild : $this->outfitConfig;
 
