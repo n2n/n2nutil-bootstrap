@@ -68,6 +68,30 @@ class BsFormHtmlBuilder {
 		return (new BsComposer())->toBsConfig();
 	}
 	
+	public function staticGroup($propertyExpression = null, $fixedValue = null, BsComposer $bsComposer = null, $label = null) {
+		return $this->view->out($this->getStaticGroup($propertyExpression, $fixedValue, $bsComposer, $label));
+	}
+	
+	public function getStaticGroup($propertyExpression = null, $fixedValue = null, BsComposer $bsComposer = null, $label = null) {
+		ArgUtils::assertTrue(null !== $propertyExpression || null !== $fixedValue);
+		$propertyPath = null;
+		$value = $fixedValue;
+		
+		if (null !== $propertyExpression) {
+			$propertyPath = $this->createPropertyPath($propertyExpression);
+			if (null === $value) {
+				$value = $this->formHtml->meta()->getMapValue($propertyExpression);
+			}
+		}
+		
+		$bsConfig = $this->createBsConfig($bsComposer);
+		$uiControl = new HtmlElement('p', array('class' => 'form-control-static'), $value);
+		
+		return $this->createUiFormGroup($propertyPath,
+				$this->createUiLabel($propertyPath, $bsConfig, $label),
+				$uiControl, $bsConfig);
+	}
+	
 	public function inputGroup($propertyExpression, BsComposer $bsComposer = null, $label = null, 
 			string $type = null) {
 		$this->view->out($this->getInputGroup($propertyExpression, $bsComposer, $label, $type));
