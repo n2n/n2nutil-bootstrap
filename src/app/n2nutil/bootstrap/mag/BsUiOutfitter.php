@@ -8,6 +8,7 @@ use n2n\web\dispatch\mag\UiOutfitter;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\ui\UiComponent;
 use n2nutil\bootstrap\ui\BsConfig;
+use n2n\impl\web\ui\view\html\HtmlSnippet;
 
 class BsUiOutfitter implements UiOutfitter {
 	private $bsConfig;
@@ -69,6 +70,11 @@ class BsUiOutfitter implements UiOutfitter {
 		if ($elemNature & self::EL_NATURE_CONTROL_ADDON_WRAPPER) {
 			return new HtmlElement('span', HtmlUtils::mergeAttrs(array('class' => 'input-group-addon'), $attrs), $contents);
 		}
+	
+		/**
+		 * @nikolai: quick fix von mir!
+		 */
+		return new HtmlSnippet($contents);
 	}
 
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
