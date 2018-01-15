@@ -72,9 +72,9 @@ class BsUiOutfitter implements UiOutfitter {
 		}
 	
 		/**
-		 * @nikolai: quick fix von mir!
+		 * @nikolai: quick fix von mir! muss wieder entfern werden!
 		 */
-		return new HtmlSnippet($contents);
+		return new HtmlElement('div', null, $contents);
 	}
 
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
