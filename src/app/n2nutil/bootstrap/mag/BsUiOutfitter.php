@@ -94,6 +94,8 @@ class BsUiOutfitter implements UiOutfitter {
 
 			return $container;
 		}
+
+		return new HtmlSnippet($contents);
 	}
 
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
