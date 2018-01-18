@@ -4,6 +4,7 @@ namespace n2nutil\bootstrap\mag;
 use n2n\impl\web\ui\view\html\HtmlElement;
 use n2n\impl\web\ui\view\html\HtmlUtils;
 use n2n\impl\web\ui\view\html\HtmlView;
+use n2n\web\dispatch\mag\MagCollection;
 use n2n\web\dispatch\mag\UiOutfitter;
 use n2n\web\dispatch\map\PropertyPath;
 use n2n\web\ui\UiComponent;
@@ -62,7 +63,7 @@ class BsUiOutfitter implements UiOutfitter {
 	 * @param int $elemNature
 	 * @return HtmlElement
 	 */
-	public function buildElement(int $elemNature, array $attrs = null, $contents = null): HtmlElement {
+	public function buildElement(int $elemNature, array $attrs = null, $contents = null): UiComponent {
 		if ($elemNature & self::EL_NATRUE_CONTROL_ADDON_SUFFIX_WRAPPER) {
 			return new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'input-group'), $attrs), $contents);
 		}
@@ -70,11 +71,29 @@ class BsUiOutfitter implements UiOutfitter {
 		if ($elemNature & self::EL_NATURE_CONTROL_ADDON_WRAPPER) {
 			return new HtmlElement('span', HtmlUtils::mergeAttrs(array('class' => 'input-group-addon'), $attrs), $contents);
 		}
-	
-		/**
-		 * @nikolai: quick fix von mir! muss wieder entfern werden!
-		 */
-		return new HtmlElement('div', null, $contents);
+
+		if ($elemNature & self::EL_NATURE_CONTROL_ADD) {
+			return new HtmlElement('button', HtmlUtils::mergeAttrs(
+					$this->buildAttrs(UiOutfitter::NATURE_BTN_SECONDARY), $attrs),
+					new HtmlElement('i', array('class' => UiOutfitter::ICON_NATURE_ADD), $contents));
+		}
+
+		if ($elemNature & self::EL_NATURE_CONTROL_REMOVE) {
+			return new HtmlElement('button', HtmlUtils::mergeAttrs(
+				$this->buildAttrs(UiOutfitter::NATURE_BTN_SECONDARY), $attrs),
+				new HtmlElement('i', array('class' => UiOutfitter::ICON_NATURE_REMOVE), $contents));
+		}
+
+		if ($elemNature & self::EL_NATURE_ARRAY_ITEM_CONTROL) {
+			$container = new HtmlElement('div', array('class' => 'row'), '');
+
+			$container->appendLn(new HtmlElement('div', array('class' => 'col-auto'), $contents));
+			$container->appendLn(new HtmlElement('div',
+					array('class' => 'col-auto ' . MagCollection::CONTROL_WRAPPER_CLASS),
+					$this->buildElement(UiOutfitter::EL_NATURE_CONTROL_REMOVE, array('class' => MagCollection::CONTROL_REMOVE_CLASS), '')));
+
+			return $container;
+		}
 	}
 
 	public function createMagDispatchableView(PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
