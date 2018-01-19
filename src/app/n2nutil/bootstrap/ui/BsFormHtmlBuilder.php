@@ -493,18 +493,19 @@ class BsFormHtmlBuilder {
 				$attrs['placeholder'] = $this->formHtml->meta()->getLabel($propertyPath);	
 			}
 		}
-		
+
 		if (null !== $bsConfig->getHelpText() && !$this->formHtml->meta()->hasErrors($propertyPath, false)) {
 			$attrs['aria-describedby'] = $this->buildHelpTextId($propertyPath);
 		}
-		
+
 		if (null === $className) {
 			$className = 'form-control';
 		}
+
 		if ($this->formHtml->meta()->hasErrors($propertyPath)) {
 			$className .= ' is-invalid';
 		}
-		
+
 		return HtmlUtils::mergeAttrs($attrs, array('class' => $className), true);
 	}
 	
@@ -565,7 +566,7 @@ class BsFormHtmlBuilder {
 		$uiLabel = null;
 		if ($nature & Mag::NATURE_GROUP) {
 			$uiLabel = $this->createUiLegend($propertyPath, $bsConfig, $mag->getLabel($this->view->getN2nLocale()));
-			$uiLabel->setAttrs(HtmlUtils::mergeAttrs($uiLabel->getAttrs(), $bsUiOutfitter->buildAttrs(UiOutfitter::NATURE_LEGEND)));
+			$uiLabel->setAttrs(HtmlUtils::mergeAttrs($uiLabel->getAttrs(), $bsUiOutfitter->createAttrs(UiOutfitter::NATURE_LEGEND)));
 		} else if (!($nature & Mag::NATURE_LABELLESS)) {
 			$uiLabel = $this->createUiLabel($propertyPath, $bsConfig, $mag->getLabel($this->view->getN2nLocale()));
 		}
