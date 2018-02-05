@@ -95,6 +95,18 @@ class BsUiOutfitter implements UiOutfitter {
 			return $container;
 		}
 
+		if ($elemNature & self::EL_NATURE_ARRAY_ITEM_CONTROL) {
+			$summary = new HtmlElement('div', array('class' => 'rocket-impl-summary'), '');
+
+			$container = new HtmlElement('div', null, $summary);
+
+			$summary->appendLn(new HtmlElement('div', array('class' => 'col-auto'), $contents));
+			$summary->appendLn(new HtmlElement('div', array('class' => 'col-auto ' . MagCollection::CONTROL_WRAPPER_CLASS),
+				$this->createElement(UiOutfitter::EL_NATURE_CONTROL_REMOVE, array('class' => MagCollection::CONTROL_REMOVE_CLASS), '')));
+
+			return $container;
+		}
+
 		return new HtmlSnippet($contents);
 	}
 
