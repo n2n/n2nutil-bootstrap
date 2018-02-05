@@ -20,7 +20,7 @@
         "n2n",
         "boostrap"
     ],
-    "license": "GNU LGPL",
+    "license": "LGPL-3.0-or-later",
     "name": "n2n/n2nutil-bootstrap",
     "require": {
         "n2n/n2n-composer-module-installer": "~7.1.0",
