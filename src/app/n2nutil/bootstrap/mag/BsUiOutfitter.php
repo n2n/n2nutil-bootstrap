@@ -14,15 +14,14 @@ use n2n\impl\web\ui\view\html\HtmlSnippet;
 class BsUiOutfitter implements UiOutfitter {
 	private $bsConfig;
 	private $outfitConfig;
-	private $propertyPath;
 	private $controlAttrs;
 	private $checkControlAttrs;
 
-	public function __construct(OutfitConfig $outfitConfig = null, BsConfig $bsConfig = null, 
-			PropertyPath $propertyPath = null, array $controlAttrs = array(), array $checkControlAttrs = array()) {
+	public function __construct(OutfitConfig $outfitConfig = null, BsConfig $bsConfig = null,
+			array $controlAttrs = array(), array $checkControlAttrs = array()) {
+
 		$this->outfitConfig = $outfitConfig;
 		$this->bsConfig = $bsConfig;
-		$this->propertyPath = $propertyPath;
 		$this->controlAttrs = $controlAttrs;
 		$this->checkControlAttrs = $checkControlAttrs;
 	}
@@ -33,19 +32,21 @@ class BsUiOutfitter implements UiOutfitter {
 	 */
 	public function createAttrs(int $nature): array {
 		$attrs = array();
-		if ($nature & self::NATURE_MAIN_CONTROL) {
-			$attrs = ($nature & self::NATURE_CHECK) ? $this->checkControlAttrs : $this->controlAttrs;
-		}
-
-		if ($nature & self::NATURE_CHECK_LABEL) {
-			$attrs = HtmlUtils::mergeAttrs($attrs, array('class' => 'form-check-label'));
-		}
 
 		if (null !== $this->outfitConfig) {
 			$specialAttrs = $this->outfitConfig->getSAttrsForNature($nature);
 			if ($specialAttrs !== null) {
 				$attrs = HtmlUtils::mergeAttrs($attrs, $specialAttrs);
 			}
+		}
+
+		if ($nature & self::NATURE_MAIN_CONTROL) {
+			$mainControlAttrs = ($nature & self::NATURE_CHECK) ? $this->checkControlAttrs : $this->controlAttrs;
+			$attrs = HtmlUtils::mergeAttrs($attrs, $mainControlAttrs);
+		}
+
+		if ($nature & self::NATURE_CHECK_LABEL) {
+			$attrs = HtmlUtils::mergeAttrs($attrs, array('class' => 'form-check-label'));
 		}
 
 		if ($nature & self::NATURE_BTN_PRIMARY) {
@@ -105,6 +106,10 @@ class BsUiOutfitter implements UiOutfitter {
 				$this->createElement(UiOutfitter::EL_NATURE_CONTROL_REMOVE, array('class' => MagCollection::CONTROL_REMOVE_CLASS), '')));
 
 			return $container;
+		}
+
+		if ($elemNature & self::EL_NATURE_CHECK_WRAPPER) {
+			return new HtmlElement('div', array('class' => 'form-check'));
 		}
 
 		return new HtmlSnippet($contents);
