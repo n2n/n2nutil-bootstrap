@@ -560,7 +560,7 @@ class BsFormHtmlBuilder {
 		$mag = $magWrapper->getMag();
 		$containerAttrs = $magWrapper->getContainerAttrs($this->view);
 
-		$bsUiOutfitter = new BsUiOutfitter($outfitConfig, $bsConfig, $propertyPath, $controlAttrs, $checkControlAttrs);
+		$bsUiOutfitter = new BsUiOutfitter($outfitConfig, $bsConfig, $controlAttrs, $checkControlAttrs);
 		$nature = $mag->getNature();
 
 		$uiLabel = null;

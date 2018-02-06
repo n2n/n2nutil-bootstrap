@@ -56,7 +56,7 @@ class BsComposer {
 	
 	/**
 	 * @param string $name
-	 * @param unknown $value
+	 * @param mixed $value
 	 * @return \n2nutil\bootstrap\ui\BsComposer
 	 */
 	public function lAttr(string $name, $value = null) {
@@ -101,7 +101,7 @@ class BsComposer {
 	
 	/**
 	 * @param string $name
-	 * @param unknown $value
+	 * @param mixed $value
 	 * @return \n2nutil\bootstrap\ui\BsComposer
 	 */
 	public function cAttr(string $name, $value = null) {
