@@ -64,7 +64,7 @@ class BsUiOutfitter implements UiOutfitter {
 	 * @param int $elemNature
 	 * @return HtmlElement
 	 */
-	public function createElement(int $elemNature, array $attrs = null, $contents = null): UiComponent {
+	public function createElement(int $elemNature, array $attrs = null, $contents = ''): UiComponent {
 		if ($elemNature & self::EL_NATRUE_CONTROL_ADDON_SUFFIX_WRAPPER) {
 			return new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'input-group'), $attrs), $contents);
 		}
@@ -109,7 +109,7 @@ class BsUiOutfitter implements UiOutfitter {
 		}
 
 		if ($elemNature & self::EL_NATURE_CHECK_WRAPPER) {
-			return new HtmlElement('div', array('class' => 'form-check'));
+			return new HtmlElement('div', array('class' => 'form-check'), $contents);
 		}
 
 		return new HtmlSnippet($contents);
