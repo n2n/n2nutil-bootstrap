@@ -77,6 +77,7 @@ class BsUiOutfitter implements UiOutfitter {
 			return new HtmlElement('button', HtmlUtils::mergeAttrs(
 					$this->createAttrs(UiOutfitter::NATURE_BTN_SECONDARY), $attrs),
 					new HtmlElement('i', array('class' => UiOutfitter::ICON_NATURE_ADD), $contents));
+
 		}
 
 		if ($elemNature & self::EL_NATURE_CONTROL_REMOVE) {
@@ -91,7 +92,8 @@ class BsUiOutfitter implements UiOutfitter {
 			$container->appendLn(new HtmlElement('div', array('class' => 'col-auto'), $contents));
 			$container->appendLn(new HtmlElement('div',
 					array('class' => 'col-auto ' . MagCollection::CONTROL_WRAPPER_CLASS),
-					$this->createElement(UiOutfitter::EL_NATURE_CONTROL_REMOVE, array('class' => MagCollection::CONTROL_REMOVE_CLASS), '')));
+					$this->createElement(UiOutfitter::EL_NATURE_CONTROL_REMOVE,
+					array('class' => MagCollection::CONTROL_REMOVE_CLASS), '')));
 
 			return $container;
 		}
