@@ -386,7 +386,7 @@ class BsFormHtmlBuilder {
 		
 		$uiMessage = null;
 		if ($propertyPath !== null && $this->formHtml->meta()->hasErrors($propertyPath)) {
-			$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'form-control-feedback'));
+			$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'invalid-feedback'));
 		}
 		
 		$uiFormGroup = new HtmlElement(($fieldset ? 'fieldset' : 'div'),
@@ -504,6 +504,8 @@ class BsFormHtmlBuilder {
 
 		if ($this->formHtml->meta()->hasErrors($propertyPath)) {
 			$className .= ' is-invalid';
+		} else {
+			$className .= ' is-valid';
 		}
 
 		return HtmlUtils::mergeAttrs($attrs, array('class' => $className), true);
