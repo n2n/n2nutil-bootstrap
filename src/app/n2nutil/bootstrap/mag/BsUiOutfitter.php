@@ -64,7 +64,7 @@ class BsUiOutfitter implements UiOutfitter {
 	 * @param int $elemNature
 	 * @return HtmlElement
 	 */
-	public function createElement(int $elemNature, array $attrs = null, $contents = null): UiComponent {
+	public function createElement(int $elemNature, array $attrs = null, $contents = ''): UiComponent {
 		if ($elemNature & self::EL_NATRUE_CONTROL_ADDON_SUFFIX_WRAPPER) {
 			return new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'input-group'), $attrs), $contents);
 		}
@@ -77,6 +77,7 @@ class BsUiOutfitter implements UiOutfitter {
 			return new HtmlElement('button', HtmlUtils::mergeAttrs(
 					$this->createAttrs(UiOutfitter::NATURE_BTN_SECONDARY), $attrs),
 					new HtmlElement('i', array('class' => UiOutfitter::ICON_NATURE_ADD), $contents));
+
 		}
 
 		if ($elemNature & self::EL_NATURE_CONTROL_REMOVE) {
@@ -91,7 +92,8 @@ class BsUiOutfitter implements UiOutfitter {
 			$container->appendLn(new HtmlElement('div', array('class' => 'col-auto'), $contents));
 			$container->appendLn(new HtmlElement('div',
 					array('class' => 'col-auto ' . MagCollection::CONTROL_WRAPPER_CLASS),
-					$this->createElement(UiOutfitter::EL_NATURE_CONTROL_REMOVE, array('class' => MagCollection::CONTROL_REMOVE_CLASS), '')));
+					$this->createElement(UiOutfitter::EL_NATURE_CONTROL_REMOVE,
+					array('class' => MagCollection::CONTROL_REMOVE_CLASS), '')));
 
 			return $container;
 		}
@@ -109,7 +111,7 @@ class BsUiOutfitter implements UiOutfitter {
 		}
 
 		if ($elemNature & self::EL_NATURE_CHECK_WRAPPER) {
-			return new HtmlElement('div', array('class' => 'form-check'));
+			return new HtmlElement('div', array('class' => 'form-check'), $contents);
 		}
 
 		return new HtmlSnippet($contents);
