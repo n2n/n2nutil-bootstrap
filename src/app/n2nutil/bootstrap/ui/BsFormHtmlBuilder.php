@@ -564,7 +564,7 @@ class BsFormHtmlBuilder {
 
 		$bsUiOutfitter = new BsUiOutfitter($outfitConfig, $bsConfig, $controlAttrs, $checkControlAttrs);
 		$nature = $mag->getNature();
-
+        test($nature);
 		$uiLabel = null;
 		if ($nature & Mag::NATURE_GROUP) {
 			$uiLabel = $this->createUiLegend($propertyPath, $bsConfig, $mag->getLabel($this->view->getN2nLocale()));
