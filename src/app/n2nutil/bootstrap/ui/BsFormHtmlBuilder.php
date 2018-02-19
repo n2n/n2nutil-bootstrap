@@ -502,10 +502,8 @@ class BsFormHtmlBuilder {
 			$className = 'form-control';
 		}
 
-		if ($this->formHtml->meta()->hasErrors($propertyPath)) {
-			$className .= ' is-invalid';
-		} else {
-			$className .= ' is-valid';
+		if ($this->formHtml->meta()->isDispatched()) {
+			$className .= ' is-' . ($this->formHtml->meta()->hasErrors($propertyPath) ? 'invalid' : 'valid');
 		}
 
 		return HtmlUtils::mergeAttrs($attrs, array('class' => $className), true);
