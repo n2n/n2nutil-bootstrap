@@ -16,6 +16,7 @@ use n2nutil\bootstrap\mag\BsUiOutfitter;
 use n2nutil\bootstrap\mag\OutfitConfig;
 use n2nutil\jquery\datepicker\DatePickerHtmlBuilder;
 use n2n\reflection\ArgUtils;
+use n2n\web\ui\Raw;
 
 class BsFormHtmlBuilder {
 	private $view;
@@ -203,14 +204,25 @@ class BsFormHtmlBuilder {
 	}
 	
 	public function getInputCheckboxCheck($propertyExpression, $value, BsComposer $bsComposer = null, $label = null) {
+		ArgUtils::valType($label, array('string', UiComponent::class), true, 'label');
+		
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		
-		return $this->createUiFormCheck($propertyPath, $bsConfig, $label,
-				$this->ariaFormHtml->getInputCheckbox($propertyPath, $value, $bsConfig->isRequired(), $controlAttrs), true, false);
+		if (!$label instanceof UiComponent) {
+			$label = $this->ariaFormHtml->getLabel($propertyPath, $bsConfig->isRequired(), $label, 
+					$this->buildFormCheckLabelAttrs($bsConfig));
+		}
+		
+		$uiFormCheck = $this->createUiFormCheck($propertyPath, $bsConfig, $label,
+				$this->ariaFormHtml->getInputCheckbox($propertyPath, $value, $bsConfig->isRequired(), $controlAttrs),
+				true, false);
+		
+		return $this->createUiFormGroup($propertyPath, null, $uiFormCheck, $bsConfig);
 	}
+
 	
 	public function inputRadiosCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null) {
 		$this->view->out($this->getInputRadiosCheck($propertyExpression, $options, $bsComposer, $label));
@@ -232,14 +244,14 @@ class BsFormHtmlBuilder {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		
-		// change back to createUiLegend() tag after flexbox fieldset bugfix
-		$uiLegend = $this->createUiLabel($propertyPath, $bsConfig, $label, false);
+		$uiLegend = $this->createUiLegend($propertyPath, $bsConfig, $label);
 		
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		$uiControl = new HtmlSnippet();
 		foreach ($options as $optionValue => $optionLabel) {
 			$uiControl->appendLn(
-					$this->createUiFormCheck($propertyPath, $bsConfig, $optionLabel,
+					$this->createUiFormCheck($propertyPath, $bsConfig, 
+							$this->formHtml->getLabel($propertyPath, $optionLabel, array('class' => 'form-check-label')),
 							$this->ariaFormHtml->getInputRadio($propertyPath, $optionValue, $controlAttrs),
 							false, $inline));
 		}
@@ -267,15 +279,14 @@ class BsFormHtmlBuilder {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 	
-		// change back to legend tag after flexbox fieldset bugfix
 		$uiLegend = $this->createUiLegend($propertyPath, $bsConfig, $label);
-	
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		$uiControl = new HtmlSnippet();
 		foreach ($options as $optionValue => $optionLabel) {
 			$fieldPropertyPath = $propertyPath->fieldExt($optionValue);
 			$uiControl->appendLn(
-					$this->createUiFormCheck($fieldPropertyPath, $bsConfig, $optionLabel,
+					$this->createUiFormCheck($fieldPropertyPath, $bsConfig, 
+							$this->formHtml->getLabel($fieldPropertyPath, $optionLabel, array('class' => 'form-check-label')),
 							$this->ariaFormHtml->getInputCheckbox($fieldPropertyPath, $optionValue, false, $controlAttrs),
 							false, $inline));
 		}
@@ -290,11 +301,10 @@ class BsFormHtmlBuilder {
 	public function getInputCheckboxGroup($propertyExpression, $value, $checkboxLabel = null, BsComposer $bsComposer = null, $label = null) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
-		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
 		
 		return $this->createUiFormGroup($propertyPath,
 				$this->createUiLabel($propertyPath, $bsConfig, $label, true, ''),
-				$this->getInputCheckboxCheck($propertyExpression, $value, $bsComposer, (null === $checkboxLabel) ? '': $checkboxLabel),
+				$this->getInputCheckboxCheck($propertyExpression, $value, $bsComposer, (null === $checkboxLabel) ? new Raw(): $checkboxLabel),
 				$bsConfig);
 	}
 	
@@ -326,41 +336,23 @@ class BsFormHtmlBuilder {
 				$bsConfig);
 	}
 	
-	private function createUiFormCheck(PropertyPath $propertyPath, BsConfig $bsConfig, $label, UiComponent $uiControl, 
-			bool $displayErrors, bool $inline) {
-		$formCheckClass = ($inline ? 'form-check-inline' : 'form-check');
-		$labelAttrs = $bsConfig->getLabelAttrs();
-		$labelAttrs = HtmlUtils::mergeAttrs($labelAttrs, array('class' => 'form-check-label'));
+	private function createUiFormCheck(PropertyPath $propertyPath, BsConfig $bsConfig, 
+			UiComponent $label = null, UiComponent $uiControl, bool $displayErrors, bool $inline) {
+		$uiFormCheck = new HtmlSnippet($uiControl);
+		
+		if (null !== $label) {
+			$uiFormCheck->append($label);
+		}
 		
 		if ($displayErrors && $this->formHtml->meta()->hasErrors($propertyPath)) {
-			$formCheckClass .= ' is-invalid';
-			$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'invalid-feedback'));
+			$uiFormCheck->append($this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'invalid-feedback')));
 		}
 		
-		if ($inline) {
-			$labelAttrs = HtmlUtils::mergeAttrs($labelAttrs, array('class' => $formCheckClass));
-			
-		}
-		
-		$uiLabel = new HtmlElement('label', $labelAttrs);
-		$uiLabel->appendLn($uiControl);
-		
-		if ($label === null) {
-			$label = $this->formHtml->meta()->getLabel($propertyPath);
-		}
-		
-// 		if ($bsConfig->isLabelHidden()) {
-// 			$uiLabel->appendLn(new HtmlElement('span', array('class' => 'sr-only'), $label));
-// 		}
-
-		$uiLabel->appendLn($label);
-		
-		if ($inline) return $uiLabel;
-		
-		$uiFormGroup = new HtmlElement('div', array('class' => $formCheckClass));
-		$uiFormGroup->appendLn($uiLabel);
-		
-		return $uiFormGroup;
+		return new HtmlElement('div', array('class' => 'form-check' . ($inline ? ' form-check-inline' : '')), $uiFormCheck);
+	}
+	
+	private function buildFormCheckLabelAttrs(BsConfig $bsConfig) {
+		return HtmlUtils::mergeAttrs($bsConfig->getLabelAttrs(), array('class' => 'form-check-label'));
 	}
 
 	/**
@@ -429,10 +421,14 @@ class BsFormHtmlBuilder {
 					array('title' => $dtc->translate('aria_required_label')), '*'));
 		}
 		
-		return new HtmlElement('legend', $this->createLabelAttrs($propertyPath, $bsConfig, 'col-form-legend'), $label);
+		return new HtmlElement('legend', $this->createLabelAttrs($propertyPath, $bsConfig, 'col-form-label'), $label);
 	}
 	
-	private function createUiLabel(PropertyPath $propertyPath, BsConfig $bsConfig, $label, bool $applyFor = true, string $className = 'col-form-label') {
+	private function createUiLabel(PropertyPath $propertyPath, BsConfig $bsConfig, $label, bool $applyFor = true, string $className = null) {
+		if (null === $className && null !== $bsConfig->getRowClassNames()) {
+			$className = 'col-form-label';
+		}
+		
 		if ($applyFor) {
 			return $this->ariaFormHtml->getLabel($propertyPath, $bsConfig->isRequired(), $label, 
 					$this->createLabelAttrs($propertyPath, $bsConfig, $className));
@@ -451,31 +447,39 @@ class BsFormHtmlBuilder {
 		return new HtmlElement('label', $this->createLabelAttrs($propertyPath, $bsConfig, $className), $label);
 	}
 	
-	private function createLabelAttrs(PropertyPath $propertyPath, BsConfig $bsConfig, string $className) {
+	private function createLabelAttrs(PropertyPath $propertyPath, BsConfig $bsConfig, string $className = null) {
 		$rowClassNames = $bsConfig->getRowClassNames();
 		$attrs = $bsConfig->getLabelAttrs();
 		
+		$classNames = [];
+		if (null !== $className) {
+			$classNames[] = $className;
+		}
+		
 		if (!$this->inline && $rowClassNames !== null) {
-			$className .= ' ' . $rowClassNames['labelClassName'] /*. ' col-form-label'*/;
+			$classNames[] = $rowClassNames['labelClassName'] /*. ' col-form-label'*/;
 		} /*else if ($this->formHtml->meta()->hasErrors($propertyPath)) {
 			$className = 'col-form-label';
 		}*/
 		
 		if ($bsConfig->isLabelHidden()) {
-			$className .= ' sr-only';
+			$classNames[] = ' sr-only';
 		}
 		
-		if ($className !== null) {
-			$attrs = HtmlUtils::mergeAttrs($attrs, array('class' => $className));
-		}
+		if (empty($classNames)) return $attrs;
 		
-		return $attrs;
+		return HtmlUtils::mergeAttrs($attrs, array('class' => implode(' ', $classNames)));
 	}
 	
 	private function createFormCheckInputAttrs(PropertyPath $propertyPath, BsConfig $bsConfig) {
 		$attrs = $bsConfig->getControlAttrs();
 		
-		return HtmlUtils::mergeAttrs($attrs, array('class' => 'form-check-input'), true);
+		$className = 'form-check-input';
+		if ($this->formHtml->meta()->isDispatched()) {
+			$className .= ' is-' . ($this->formHtml->meta()->hasErrors($propertyPath) ? 'invalid' : 'valid');
+		}
+		
+		return HtmlUtils::mergeAttrs($attrs, array('class' => $className), true);
 	}
 	
 	private function createFormControlAttrs(PropertyPath $propertyPath, BsConfig $bsConfig, 
@@ -505,7 +509,7 @@ class BsFormHtmlBuilder {
 		if ($this->formHtml->meta()->isDispatched()) {
 			$className .= ' is-' . ($this->formHtml->meta()->hasErrors($propertyPath) ? 'invalid' : 'valid');
 		}
-
+		
 		return HtmlUtils::mergeAttrs($attrs, array('class' => $className), true);
 	}
 	
