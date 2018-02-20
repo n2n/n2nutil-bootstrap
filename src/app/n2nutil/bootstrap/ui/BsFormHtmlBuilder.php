@@ -79,7 +79,7 @@ class BsFormHtmlBuilder {
 	 * @return BsComposer|BsConfig|null
 	 */
 	private function createBsConfig($bsComposer = null) {
-		if ($bsComposer instanceof BsComposer && $bsComposer !== null) {
+		if ($bsComposer instanceof BsComposer) {
 			return $bsComposer->toBsConfig($this->globalBsConfig);
 		}
 		
@@ -313,11 +313,11 @@ class BsFormHtmlBuilder {
 				$bsConfig);
 	}
 
-	public function buttonSubmitGroup($method, $label = null, BsComposer $bsComposer = null) {
-		$this->view->out($this->getButtonSubmitGroup($method, $label, $bsComposer));
+	public function buttonSubmitGroup($methodName = null, $label = null, BsComposer $bsComposer = null) {
+		$this->view->out($this->getButtonSubmitGroup($methodName, $label, $bsComposer));
 	}
 	
-	public function getButtonSubmitGroup($methodName, $label = null, BsComposer $bsComposer = null) {
+	public function getButtonSubmitGroup($methodName = null, $label = null, BsComposer $bsComposer = null) {
 		$bsConfig = $this->createBsConfig($bsComposer);
 		$controlAttrs = HtmlUtils::mergeAttrs(array('class' => 'btn btn-primary'), $bsConfig->getControlAttrs());
 		

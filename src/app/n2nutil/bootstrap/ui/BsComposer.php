@@ -2,6 +2,7 @@
 namespace n2nutil\bootstrap\ui;
 
 use n2n\impl\web\ui\view\html\HtmlUtils;
+use n2n\web\ui\UiComponent;
 
 class BsComposer {
 	private $required;
@@ -82,7 +83,7 @@ class BsComposer {
 	}
 	
 	/**
-	 * @param string $helpTxet
+	 * @param string|UiComponent $helpTxet
 	 * @return \n2nutil\bootstrap\ui\BsComposer
 	 */
 	public function hTxt($helpText) {
