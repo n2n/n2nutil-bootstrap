@@ -2,6 +2,7 @@
 namespace n2nutil\bootstrap\ui;
 
 use n2n\impl\web\ui\view\html\HtmlUtils;
+use n2n\web\ui\UiComponent;
 
 class BsComposer {
 	private $required;
@@ -14,6 +15,7 @@ class BsComposer {
 	private $placeholder;
 	private $helpText;
 	private $rowClassNames;
+	private $rowCleared = false;
 	private $groupAttrs;
 	private $groupAttrsCleared = false;
 	private $child;
@@ -82,7 +84,7 @@ class BsComposer {
 	}
 	
 	/**
-	 * @param string $helpTxet
+	 * @param string|UiComponent $helpTxet
 	 * @return \n2nutil\bootstrap\ui\BsComposer
 	 */
 	public function hTxt($helpText) {
@@ -170,6 +172,14 @@ class BsComposer {
 		return $this;
 	}
 	
+	/**
+	 * @return \n2nutil\bootstrap\ui\BsComposer
+	 */
+	public function rowClear(bool $rowCleared = true) {
+		$this->rowCleared = true;
+		return $this;
+	}
+	
 	public function toBsConfig(BsConfig $parentBsConfig = null) {
 		$required = $this->required ?? false;
 		$placeholder = $this->placeholder;
@@ -197,7 +207,9 @@ class BsComposer {
 			if (!$this->groupAttrsCleared) {
 				$groupAttrs = HtmlUtils::mergeAttrs($parentBsConfig->getGroupAttrs(), $groupAttrs);
 			}
-			if ($this->rowClassNames === null) $rowClassNames = $parentBsConfig->getRowClassNames();
+			if (!$this->rowCleared) {
+				if ($this->rowClassNames === null) $rowClassNames = $parentBsConfig->getRowClassNames();
+			}
 		}
 		
 		return new BsConfig($required, $autoPlaceholder, $placeholder, $helpText, $labelHidden, $labelAttrs,

@@ -124,6 +124,12 @@ class Bs {
 	public static function row(string $labelClassName, string $containerClassName, string $labelOffsetClassName) {
 		return (new BsComposer())->row($labelClassName, $containerClassName, $labelOffsetClassName);
 	}
+	/**
+	 * @return \n2nutil\bootstrap\ui\BsComposer
+	 */
+	public static function rowClear(bool $rowCleared = true) {
+		return (new BsComposer())->rowClear($rowCleared);
+	}
 
 	public static function child(BsComposer $bsComposer) {
 		return (new BsComposer())->child($bsComposer);
