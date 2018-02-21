@@ -56,15 +56,26 @@ class BsFormHtmlBuilder {
 	public function open(Dispatchable $dispatchableObject, string $enctype = null, $method = null, 
 			array $attrs = null, $action = null) {
 		$this->inline = false;
-		return $this->formHtml->open($dispatchableObject, $enctype, $method, $attrs, $action);
+		
+		return $this->formHtml->open($dispatchableObject, $enctype, $method, 
+				$this->buildFormAttrs($dispatchableObject, $attrs), $action);
 	}
 	
 	public function openInline(Dispatchable $dispatchableObject, string $enctype = null, $method = null, 
 			array $attrs = null, $action = null) {
-		$attrs = HtmlUtils::mergeAttrs(array('class' => 'form-inline'), (array) $attrs);
-		$uiOpen = $this->open($dispatchableObject, $enctype, $method, $attrs, $action);
+		$attrs = HtmlUtils::mergeAttrs(array('class' => 'form-inline'), $attrs);
+		$uiOpen = $this->open($dispatchableObject, $enctype, $method, 
+				$this->buildFormAttrs($dispatchableObject, $attrs), $action);
 		$this->inline = true;
 		return $uiOpen;
+	}
+	
+	private function buildFormAttrs(Dispatchable $dispatchableObject, array $attrs = null) {
+		//@todo: das dispatchable übergeben sonst exception
+		return $attrs;
+		if (!$this->formHtml->meta()->isDispatched()) return $attrs;
+		
+		return HtmlUtils::mergeAttrs(array('class' => 'was-validated'), $attrs);
 	}
 	
 	public function close() {
@@ -111,7 +122,7 @@ class BsFormHtmlBuilder {
 		$uiControl = new HtmlElement('p', array('class' => 'form-control-static'), $value);
 		
 		return $this->createUiFormGroup($propertyPath,
-				$this->createUiLabel($propertyPath, $bsConfig, $label),
+				$this->createUiLabel($propertyPath, $bsConfig, $label, false),
 				$uiControl, $bsConfig);
 	}
 	
@@ -173,7 +184,7 @@ class BsFormHtmlBuilder {
 			array $fileLabelAttrs = null) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
-		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig, null, 'form-control-file');
+		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig, null, 'form-control-file form-control');
 		
 		return $this->createUiFormGroup($propertyPath,
 				$this->createUiLabel($propertyPath, $bsConfig, $label),
@@ -204,23 +215,26 @@ class BsFormHtmlBuilder {
 	}
 	
 	public function getInputCheckboxCheck($propertyExpression, $value, BsComposer $bsComposer = null, $label = null) {
-		ArgUtils::valType($label, array('string', UiComponent::class), true, 'label');
-		
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
+		
+		return $this->createUiFormGroup($propertyPath, null, 
+				$this->createUiInputCheckboxCheck($propertyPath, $value, $bsConfig), $bsConfig);
+	}
+	
+	private function createUiInputCheckboxCheck(PropertyPath $propertyPath, $value, BsConfig $bsConfig, $label = null) {
+		ArgUtils::valType($label, array('string', UiComponent::class), true, 'label');
 		
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		
 		if (!$label instanceof UiComponent) {
-			$label = $this->ariaFormHtml->getLabel($propertyPath, $bsConfig->isRequired(), $label, 
+			$label = $this->ariaFormHtml->getLabel($propertyPath, $bsConfig->isRequired(), $label,
 					$this->buildFormCheckLabelAttrs($bsConfig));
 		}
 		
-		$uiFormCheck = $this->createUiFormCheck($propertyPath, $bsConfig, $label,
+		return $this->createUiFormCheck($propertyPath, $bsConfig, $label,
 				$this->ariaFormHtml->getInputCheckbox($propertyPath, $value, $bsConfig->isRequired(), $controlAttrs),
 				true, false);
-		
-		return $this->createUiFormGroup($propertyPath, null, $uiFormCheck, $bsConfig);
 	}
 
 	
@@ -304,7 +318,8 @@ class BsFormHtmlBuilder {
 		
 		return $this->createUiFormGroup($propertyPath,
 				$this->createUiLabel($propertyPath, $bsConfig, $label, true, ''),
-				$this->getInputCheckboxCheck($propertyExpression, $value, $bsComposer, (null === $checkboxLabel) ? new Raw(): $checkboxLabel),
+				$this->createUiInputCheckboxCheck($propertyPath, $value, $bsConfig, 
+						(null === $checkboxLabel) ? new Raw(): $checkboxLabel),
 				$bsConfig);
 	}
 	
@@ -381,25 +396,31 @@ class BsFormHtmlBuilder {
 			$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'invalid-feedback'));
 		}
 		
-		$uiFormGroup = new HtmlElement(($fieldset ? 'fieldset' : 'div'),
-				HtmlUtils::mergeAttrs(array('class' => implode(' ', $formGroupClassNames)), $groupAttrs));
-		$uiFormGroup->appendLn();
-		
-		if ($uiLabel !== null) $uiFormGroup->appendLn($uiLabel);
-		
-		$uiContainer = $uiFormGroup;
-		
-		if ($this->inline || $rowClassNames === null) {
-			$uiFormGroup->appendLn($uiControl);
-			if ($uiMessage !== null) $uiFormGroup->appendLn($uiMessage);
-		} else {
-			$className = $rowClassNames['containerClassName'];
-			if ($uiLabel === null && !$bsConfig->isLabelHidden()) {
-				$className .= ' ' . $rowClassNames['labelOffsetClassName'];
+		$uiContainer = null;
+		$helpTextUiContainer = null;
+		if (!$this->inline) {
+			$helpTextUiContainer = $uiContainer = new HtmlElement(($fieldset ? 'fieldset' : 'div'),
+					HtmlUtils::mergeAttrs(array('class' => implode(' ', $formGroupClassNames)), $groupAttrs));
+			$uiContainer->appendLn();
+			if ($uiLabel !== null) $uiContainer->appendLn($uiLabel);
+			
+			if ($rowClassNames === null) {
+				$uiContainer->appendLn($uiControl);
+			} else {
+				$className = $rowClassNames['containerClassName'];
+				if ($uiLabel === null && !$bsConfig->isLabelHidden()) {
+					$className .= ' ' . $rowClassNames['labelOffsetClassName'];
+				}
+				$uiContainer->appendLn($helpTextUiContainer = new HtmlElement('div', array('class' => $className), $uiControl));
 			}
-			$uiFormGroup->appendLn($uiContainer = new HtmlElement('div', array('class' => $className), $uiControl));
-			if ($uiMessage !== null) $uiContainer->appendLn($uiMessage);
+		} else {
+			$helpTextUiContainer = $uiContainer = new HtmlSnippet();
+			if ($uiLabel !== null) $uiContainer->appendLn($uiLabel);
+			$uiContainer->appendLn($uiControl);
 		}
+		
+		if ($uiMessage !== null) $uiContainer->appendLn($uiMessage);
+
 		
 		if ($propertyPath !== null && null !== ($helpText = $bsConfig->getHelpText())) {
 			$uiContainer->appendLn(new HtmlElement('small', array(
@@ -407,7 +428,7 @@ class BsFormHtmlBuilder {
 					'id' => $this->buildHelpTextId($propertyPath)), $helpText));
 		}
 		
-		return $uiFormGroup;
+		return $uiContainer;
 	}
 	
 	private function createUiLegend(PropertyPath $propertyPath, BsConfig $bsConfig, string $label = null) {
@@ -421,17 +442,17 @@ class BsFormHtmlBuilder {
 					array('title' => $dtc->translate('aria_required_label')), '*'));
 		}
 		
-		return new HtmlElement('legend', $this->createLabelAttrs($propertyPath, $bsConfig, 'col-form-label'), $label);
+		return new HtmlElement('legend', $this->createLabelAttrs($bsConfig, 'col-form-label'), $label);
 	}
 	
-	private function createUiLabel(PropertyPath $propertyPath, BsConfig $bsConfig, $label, bool $applyFor = true, string $className = null) {
+	private function createUiLabel(PropertyPath $propertyPath = null, BsConfig $bsConfig, $label, bool $applyFor = true, string $className = null) {
 		if (null === $className && null !== $bsConfig->getRowClassNames()) {
 			$className = 'col-form-label';
 		}
 		
 		if ($applyFor) {
 			return $this->ariaFormHtml->getLabel($propertyPath, $bsConfig->isRequired(), $label, 
-					$this->createLabelAttrs($propertyPath, $bsConfig, $className));
+					$this->createLabelAttrs($bsConfig, $className));
 		}
 		
 		if ($label === null) {
@@ -444,10 +465,10 @@ class BsFormHtmlBuilder {
 					array('title' => $dtc->translate('aria_required_label')), '*'));
 		}
 		
-		return new HtmlElement('label', $this->createLabelAttrs($propertyPath, $bsConfig, $className), $label);
+		return new HtmlElement('label', $this->createLabelAttrs($bsConfig, $className), $label);
 	}
 	
-	private function createLabelAttrs(PropertyPath $propertyPath, BsConfig $bsConfig, string $className = null) {
+	private function createLabelAttrs(BsConfig $bsConfig, string $className = null) {
 		$rowClassNames = $bsConfig->getRowClassNames();
 		$attrs = $bsConfig->getLabelAttrs();
 		
@@ -462,7 +483,7 @@ class BsFormHtmlBuilder {
 			$className = 'col-form-label';
 		}*/
 		
-		if ($bsConfig->isLabelHidden()) {
+		if ($bsConfig->isLabelHidden() || $this->inline) {
 			$classNames[] = ' sr-only';
 		}
 		
