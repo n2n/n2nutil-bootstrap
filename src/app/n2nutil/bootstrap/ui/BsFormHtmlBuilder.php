@@ -419,7 +419,7 @@ class BsFormHtmlBuilder {
 			$uiContainer->appendLn($uiControl);
 		}
 		
-		if ($uiMessage !== null) $uiContainer->appendLn($uiMessage);
+		if ($uiMessage !== null) $helpTextUiContainer->appendLn($uiMessage);
 
 		
 		if ($propertyPath !== null && null !== ($helpText = $bsConfig->getHelpText())) {
