@@ -113,6 +113,10 @@ class BsUiOutfitter implements UiOutfitter {
 		if ($elemNature & self::EL_NATURE_CHECK_WRAPPER) {
 			return new HtmlElement('div', array('class' => 'form-check'), $contents);
 		}
+		
+		if ($elemNature & self::EL_NATURE_HELP_TEXT) {
+			return new HtmlElement('small', array('class' => 'form-text text-muted'), $contents);
+		}
 
 		return new HtmlSnippet($contents);
 	}
