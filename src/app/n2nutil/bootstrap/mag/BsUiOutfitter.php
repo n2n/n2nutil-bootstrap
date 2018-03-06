@@ -12,6 +12,7 @@ use n2nutil\bootstrap\ui\BsConfig;
 use n2n\impl\web\ui\view\html\HtmlSnippet;
 
 class BsUiOutfitter implements UiOutfitter {
+	
 	private $bsConfig;
 	private $outfitConfig;
 	private $controlAttrs;
@@ -22,8 +23,9 @@ class BsUiOutfitter implements UiOutfitter {
 
 		$this->outfitConfig = $outfitConfig;
 		$this->bsConfig = $bsConfig;
-		$this->controlAttrs = $controlAttrs;
-		$this->checkControlAttrs = $checkControlAttrs;
+		$this->controlAttrs = $controlAttrs ?? (null !== $bsConfig) 
+				? $bsConfig->getControlAttrs() : ['class' => 'form-control'];
+		$this->checkControlAttrs = $checkControlAttrs ?? ['class' => 'form-check'];
 	}
 
 	/**
@@ -112,10 +114,6 @@ class BsUiOutfitter implements UiOutfitter {
 
 		if ($elemNature & self::EL_NATURE_CHECK_WRAPPER) {
 			return new HtmlElement('div', array('class' => 'form-check'), $contents);
-		}
-		
-		if ($elemNature & self::EL_NATURE_HELP_TEXT) {
-			return new HtmlElement('small', array('class' => 'form-text text-muted'), $contents);
 		}
 
 		return new HtmlSnippet($contents);
