@@ -423,7 +423,7 @@ class BsFormHtmlBuilder {
 
 		
 		if ($propertyPath !== null && null !== ($helpText = $bsConfig->getHelpText())) {
-			$uiContainer->appendLn(new HtmlElement('small', array(
+			$helpTextUiContainer->appendLn(new HtmlElement('small', array(
 					'class' => 'form-text text-muted',
 					'id' => $this->buildHelpTextId($propertyPath)), $helpText));
 		}
