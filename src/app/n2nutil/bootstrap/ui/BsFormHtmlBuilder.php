@@ -119,7 +119,7 @@ class BsFormHtmlBuilder {
 		}
 		
 		$bsConfig = $this->createBsConfig($bsComposer);
-		$uiControl = new HtmlElement('p', array('class' => 'form-control-static'), $value);
+		$uiControl = new HtmlElement('p', array('class' => 'form-control-plaintext'), $value);
 		
 		return $this->createUiFormGroup($propertyPath,
 				$this->createUiLabel($propertyPath, $bsConfig, $label, false),
