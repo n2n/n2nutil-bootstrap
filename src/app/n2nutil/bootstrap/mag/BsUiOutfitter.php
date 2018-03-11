@@ -71,7 +71,7 @@ class BsUiOutfitter implements UiOutfitter {
 		}
 
 		if ($elemNature & self::EL_NATURE_CONTROL_ADDON_WRAPPER) {
-			return new HtmlElement('span', HtmlUtils::mergeAttrs(array('class' => 'input-group-addon'), $attrs), $contents);
+			return new HtmlElement('span', HtmlUtils::mergeAttrs(array('class' => 'input-group-append'), $attrs), $contents);
 		}
 
 		if ($elemNature & self::EL_NATURE_CONTROL_ADD) {
