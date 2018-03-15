@@ -119,7 +119,7 @@ class BsFormHtmlBuilder {
 		}
 		
 		$bsConfig = $this->createBsConfig($bsComposer);
-		$uiControl = new HtmlElement('p', array('class' => 'form-control-static'), $value);
+		$uiControl = new HtmlElement('p', array('class' => 'form-control-plaintext'), $value);
 		
 		return $this->createUiFormGroup($propertyPath,
 				$this->createUiLabel($propertyPath, $bsConfig, $label, false),
@@ -423,7 +423,7 @@ class BsFormHtmlBuilder {
 
 		
 		if ($propertyPath !== null && null !== ($helpText = $bsConfig->getHelpText())) {
-			$uiContainer->appendLn(new HtmlElement('small', array(
+			$helpTextUiContainer->appendLn(new HtmlElement('small', array(
 					'class' => 'form-text text-muted',
 					'id' => $this->buildHelpTextId($propertyPath)), $helpText));
 		}

@@ -23,9 +23,8 @@ class BsUiOutfitter implements UiOutfitter {
 
 		$this->outfitConfig = $outfitConfig;
 		$this->bsConfig = $bsConfig;
-		$this->controlAttrs = $controlAttrs ?? (null !== $bsConfig) 
-				? $bsConfig->getControlAttrs() : ['class' => 'form-control'];
-		$this->checkControlAttrs = $checkControlAttrs ?? ['class' => 'form-check'];
+		$this->controlAttrs = !empty($controlAttrs) ? $controlAttrs : ['class' => 'form-control'];
+		$this->checkControlAttrs = !empty($checkControlAttrs) ? $checkControlAttrs : ['class' => 'form-check'];
 	}
 
 	/**
@@ -72,7 +71,7 @@ class BsUiOutfitter implements UiOutfitter {
 		}
 
 		if ($elemNature & self::EL_NATURE_CONTROL_ADDON_WRAPPER) {
-			return new HtmlElement('span', HtmlUtils::mergeAttrs(array('class' => 'input-group-addon'), $attrs), $contents);
+			return new HtmlElement('span', HtmlUtils::mergeAttrs(array('class' => 'input-group-append'), $attrs), $contents);
 		}
 
 		if ($elemNature & self::EL_NATURE_CONTROL_ADD) {
