@@ -67,11 +67,13 @@ class BsUiOutfitter implements UiOutfitter {
 	 */
 	public function createElement(int $elemNature, array $attrs = null, $contents = ''): UiComponent {
 		if ($elemNature & self::EL_NATRUE_CONTROL_ADDON_SUFFIX_WRAPPER) {
-			return new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'input-group'), $attrs), $contents);
+			$inputGroupAppend = new HtmlElement('span', array('class' => 'input-group-text'), $contents);
+			return new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'input-group'), $attrs), $inputGroupAppend);
 		}
 
 		if ($elemNature & self::EL_NATURE_CONTROL_ADDON_WRAPPER) {
-			return new HtmlElement('span', HtmlUtils::mergeAttrs(array('class' => 'input-group-append'), $attrs), $contents);
+			$inputGroupAppend = HtmlElement('span', array('class' => 'input-group-text'), $contents);
+			return new HtmlElement('div', HtmlUtils::mergeAttrs(array('class' => 'input-group-append'), $attrs), $inputGroupAppend);
 		}
 
 		if ($elemNature & self::EL_NATURE_CONTROL_ADD) {
