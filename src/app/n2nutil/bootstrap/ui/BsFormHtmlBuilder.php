@@ -588,6 +588,7 @@ class BsFormHtmlBuilder {
 
 		$controlAttrs = array();
 		$checkControlAttrs = array();
+		
 		if ($bsComposer === null) {
 			$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
 			$checkControlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
@@ -597,6 +598,25 @@ class BsFormHtmlBuilder {
 		$mag = $magWrapper->getMag();
 		$containerAttrs = $magWrapper->getContainerAttrs($this->view);
 
+		if (empty($controlAttrs)) {
+			$controlAttrs = ['class' => 'form-control'];
+		}
+		
+		if (empty($checkControlAttrs)) {
+			$checkControlAttrs = ['class' => 'form-check-input'];
+		}
+		
+		$formHtmlMeta = $this->formHtml->meta();
+		if ($formHtmlMeta->isDispatched()) {
+			if ($formHtmlMeta->hasErrors($propertyPath)) {
+				$controlAttrs = HtmlUtils::mergeAttrs($controlAttrs, ['class' => 'is-invalid']);
+				$checkControlAttrs = HtmlUtils::mergeAttrs($checkControlAttrs, ['class' => 'is-invalid']);
+			} else {
+				$controlAttrs = HtmlUtils::mergeAttrs($controlAttrs, ['class' => 'is-valid']);
+				$checkControlAttrs = HtmlUtils::mergeAttrs($checkControlAttrs, ['class' => 'is-valid']);
+			}
+		}
+		
 		$bsUiOutfitter = new BsUiOutfitter($outfitConfig, $bsConfig, $controlAttrs, $checkControlAttrs);
 		$nature = $mag->getNature();
 		$uiLabel = null;
