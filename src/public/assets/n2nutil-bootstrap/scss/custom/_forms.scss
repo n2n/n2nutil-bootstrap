@@ -1,0 +1,2 @@
+@include form-validation-state("valid", $form-feedback-invalid-color);
+@include form-validation-state("invalid", $form-feedback-invalid-color);
