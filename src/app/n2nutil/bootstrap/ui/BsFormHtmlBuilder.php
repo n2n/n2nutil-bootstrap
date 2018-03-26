@@ -262,15 +262,12 @@ class BsFormHtmlBuilder {
 		
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		$uiControl = new HtmlSnippet();
-		$numOptions = count($options);
-		$num = 0;
 		foreach ($options as $optionValue => $optionLabel) {
-			$num++;
 			$uiControl->appendLn(
 					$this->createUiFormCheck($propertyPath, $bsConfig, 
 							$this->formHtml->getLabel($propertyPath, $optionLabel, array('class' => 'form-check-label')),
 							$this->ariaFormHtml->getInputRadio($propertyPath, $optionValue, $controlAttrs),
-							$num === $numOptions, $inline, $propertyPath));
+							false, $inline));
 		}
 		
 		return $this->createUiFormGroup($propertyPath, $uiLegend, $uiControl, $bsConfig, false);
@@ -299,16 +296,13 @@ class BsFormHtmlBuilder {
 		$uiLegend = $this->createUiLegend($propertyPath, $bsConfig, $label);
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		$uiControl = new HtmlSnippet();
-		$numOptions = count($options);
-		$num = 0;
 		foreach ($options as $optionValue => $optionLabel) {
-			$num++;
 			$fieldPropertyPath = $propertyPath->fieldExt($optionValue);
 			$uiControl->appendLn(
 					$this->createUiFormCheck($fieldPropertyPath, $bsConfig, 
 							$this->formHtml->getLabel($fieldPropertyPath, $optionLabel, array('class' => 'form-check-label')),
 							$this->ariaFormHtml->getInputCheckbox($fieldPropertyPath, $optionValue, false, $controlAttrs),
-							$numOptions === $num, $inline, $propertyPath));
+							false, $inline));
 		}
 	
 		return $this->createUiFormGroup($propertyPath, $uiLegend, $uiControl, $bsConfig, false);
@@ -400,8 +394,14 @@ class BsFormHtmlBuilder {
 		}
 		
 		$uiMessage = null;
-		if ($propertyPath !== null && $this->formHtml->meta()->hasErrors($propertyPath)) {
-			$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'invalid-feedback'));
+		$containerClassNames = [];
+		if ($propertyPath !== null && $this->formHtml->meta()->isDispatched()) {
+			if ($this->formHtml->meta()->hasErrors($propertyPath)) {
+				$uiMessage = $this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'invalid-feedback'));
+				$containerClassNames[] = 'bs-is-invalid';
+			} else {
+				$containerClassNames[] = 'bs-is-valid';
+			}
 		}
 		
 		$uiContainer = null;
@@ -416,6 +416,11 @@ class BsFormHtmlBuilder {
 				$uiContainer->appendLn($uiControl);
 			} else {
 				$className = $rowClassNames['containerClassName'];
+				
+				if (!empty($containerClassNames)) {
+					$className .= ' ' . implode(' ', $containerClassNames);
+				}
+				
 				if ($uiLabel === null && !$bsConfig->isLabelHidden()) {
 					$className .= ' ' . $rowClassNames['labelOffsetClassName'];
 				}
@@ -428,7 +433,6 @@ class BsFormHtmlBuilder {
 		}
 		
 		if ($uiMessage !== null) $helpTextUiContainer->appendLn($uiMessage);
-
 		
 		if ($propertyPath !== null && null !== ($helpText = $bsConfig->getHelpText())) {
 			$helpTextUiContainer->appendLn(new HtmlElement('small', array(
