@@ -1,0 +1,7 @@
+@mixin form-validation-state($state, $color) {
+	.bs-is-invalid > .#{$state}-feedback {
+	  display: block;
+	  color: $color;
+	}
+  }
+  
