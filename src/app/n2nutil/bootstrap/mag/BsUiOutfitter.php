@@ -24,7 +24,7 @@ class BsUiOutfitter implements UiOutfitter {
 		$this->outfitConfig = $outfitConfig;
 		$this->bsConfig = $bsConfig;
 		$this->controlAttrs = !empty($controlAttrs) ? $controlAttrs : ['class' => 'form-control'];
-		$this->checkControlAttrs = !empty($checkControlAttrs) ? $checkControlAttrs : ['class' => 'form-check'];
+		$this->checkControlAttrs = !empty($checkControlAttrs) ? $checkControlAttrs : ['class' => 'form-check-input'];
 	}
 
 	/**

@@ -262,12 +262,15 @@ class BsFormHtmlBuilder {
 		
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		$uiControl = new HtmlSnippet();
+		$numOptions = count($options);
+		$num = 0;
 		foreach ($options as $optionValue => $optionLabel) {
+			$num++;
 			$uiControl->appendLn(
 					$this->createUiFormCheck($propertyPath, $bsConfig, 
 							$this->formHtml->getLabel($propertyPath, $optionLabel, array('class' => 'form-check-label')),
 							$this->ariaFormHtml->getInputRadio($propertyPath, $optionValue, $controlAttrs),
-							false, $inline));
+							$num === $numOptions, $inline, $propertyPath));
 		}
 		
 		return $this->createUiFormGroup($propertyPath, $uiLegend, $uiControl, $bsConfig, false);
@@ -296,13 +299,16 @@ class BsFormHtmlBuilder {
 		$uiLegend = $this->createUiLegend($propertyPath, $bsConfig, $label);
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		$uiControl = new HtmlSnippet();
+		$numOptions = count($options);
+		$num = 0;
 		foreach ($options as $optionValue => $optionLabel) {
+			$num++;
 			$fieldPropertyPath = $propertyPath->fieldExt($optionValue);
 			$uiControl->appendLn(
 					$this->createUiFormCheck($fieldPropertyPath, $bsConfig, 
 							$this->formHtml->getLabel($fieldPropertyPath, $optionLabel, array('class' => 'form-check-label')),
 							$this->ariaFormHtml->getInputCheckbox($fieldPropertyPath, $optionValue, false, $controlAttrs),
-							false, $inline));
+							$numOptions === $num, $inline, $propertyPath));
 		}
 	
 		return $this->createUiFormGroup($propertyPath, $uiLegend, $uiControl, $bsConfig, false);
@@ -352,15 +358,17 @@ class BsFormHtmlBuilder {
 	}
 	
 	private function createUiFormCheck(PropertyPath $propertyPath, BsConfig $bsConfig, 
-			UiComponent $label = null, UiComponent $uiControl, bool $displayErrors, bool $inline) {
+			UiComponent $label = null, UiComponent $uiControl, bool $displayErrors, bool $inline, 
+			PropertyPath $errPropertyPath = null) {
 		$uiFormCheck = new HtmlSnippet($uiControl);
 		
 		if (null !== $label) {
 			$uiFormCheck->append($label);
 		}
 		
-		if ($displayErrors && $this->formHtml->meta()->hasErrors($propertyPath)) {
-			$uiFormCheck->append($this->ariaFormHtml->getMessage($propertyPath, 'div', array('class' => 'invalid-feedback')));
+		$errPropertyPath = $errPropertyPath ?? $propertyPath;
+		if ($displayErrors && $this->formHtml->meta()->hasErrors($errPropertyPath)) {
+			$uiFormCheck->append($this->ariaFormHtml->getMessage($errPropertyPath, 'div', array('class' => 'invalid-feedback')));
 		}
 		
 		return new HtmlElement('div', array('class' => 'form-check' . ($inline ? ' form-check-inline' : '')), $uiFormCheck);
@@ -576,7 +584,7 @@ class BsFormHtmlBuilder {
 
 		$controlAttrs = array();
 		$checkControlAttrs = array();
-		if ($bsComposer !== null) {
+		if ($bsComposer === null) {
 			$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
 			$checkControlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
 		}
