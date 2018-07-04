@@ -184,7 +184,7 @@ class BsFormHtmlBuilder {
 			array $fileLabelAttrs = null) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
-		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig, null, 'form-control-file form-control');
+		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig, null, 'form-control-file');
 		
 		return $this->createUiFormGroup($propertyPath,
 				$this->createUiLabel($propertyPath, $bsConfig, $label),
