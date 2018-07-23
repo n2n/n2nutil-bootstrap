@@ -337,6 +337,20 @@ class BsFormHtmlBuilder {
 				$this->ariaFormHtml->getTextarea($propertyPath, $bsConfig->isRequired(), $controlAttrs),
 				$bsConfig);
 	}
+	
+	public function getCustomGroup(UiComponent $uiControl, $propertyExpression, BsComposer $bsComposer = null, $label = null) {
+		$propertyPath = $this->createPropertyPath($propertyExpression);
+		$bsConfig = $this->createBsConfig($bsComposer);
+		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
+		
+		return $this->createUiFormGroup($propertyPath,
+				$this->createUiLabel($propertyPath, $bsConfig, $label),
+				$uiControl, $bsConfig);
+	}
+	
+	public function customGroup(UiComponent $uiControl, $propertyExpression, BsComposer $bsComposer = null, $label = null) {
+		$this->view->out($this->getCustomGroup($uiControl, $propertyExpression, $bsComposer, $label));
+	}
 
 	public function buttonSubmitGroup($methodName = null, $label = null, BsComposer $bsComposer = null) {
 		$this->view->out($this->getButtonSubmitGroup($methodName, $label, $bsComposer));
