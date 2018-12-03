@@ -8,7 +8,7 @@ use n2nutil\jquery\JQueryLibrary;
 
 class BootstrapLibrary  extends LibraryAdapter {
 	
-	const VERSION = '4.0.0';
+	const VERSION = '4.1.3';
 	
 	private $loadBootstrapCss;
 	private $loadJs;
