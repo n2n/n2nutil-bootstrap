@@ -6,7 +6,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-alpha.6): carousel.js
+ * Bootstrap (v4.0.0-alpha.5): carousel.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
@@ -20,7 +20,7 @@ var Carousel = function ($) {
    */
 
   var NAME = 'carousel';
-  var VERSION = '4.0.0-alpha.6';
+  var VERSION = '4.0.0-alpha.5';
   var DATA_KEY = 'bs.carousel';
   var EVENT_KEY = '.' + DATA_KEY;
   var DATA_API_KEY = '.data-api';
@@ -47,9 +47,7 @@ var Carousel = function ($) {
 
   var Direction = {
     NEXT: 'next',
-    PREV: 'prev',
-    LEFT: 'left',
-    RIGHT: 'right'
+    PREVIOUS: 'prev'
   };
 
   var Event = {
@@ -66,10 +64,8 @@ var Carousel = function ($) {
     CAROUSEL: 'carousel',
     ACTIVE: 'active',
     SLIDE: 'slide',
-    RIGHT: 'carousel-item-right',
-    LEFT: 'carousel-item-left',
-    NEXT: 'carousel-item-next',
-    PREV: 'carousel-item-prev',
+    RIGHT: 'right',
+    LEFT: 'left',
     ITEM: 'carousel-item'
   };
 
@@ -77,7 +73,7 @@ var Carousel = function ($) {
     ACTIVE: '.active',
     ACTIVE_ITEM: '.active.carousel-item',
     ITEM: '.carousel-item',
-    NEXT_PREV: '.carousel-item-next, .carousel-item-prev',
+    NEXT_PREV: '.next, .prev',
     INDICATORS: '.carousel-indicators',
     DATA_SLIDE: '[data-slide], [data-slide-to]',
     DATA_RIDE: '[data-ride="carousel"]'
@@ -112,10 +108,9 @@ var Carousel = function ($) {
     // public
 
     Carousel.prototype.next = function next() {
-      if (this._isSliding) {
-        throw new Error('Carousel is sliding');
+      if (!this._isSliding) {
+        this._slide(Direction.NEXT);
       }
-      this._slide(Direction.NEXT);
     };
 
     Carousel.prototype.nextWhenVisible = function nextWhenVisible() {
@@ -126,10 +121,9 @@ var Carousel = function ($) {
     };
 
     Carousel.prototype.prev = function prev() {
-      if (this._isSliding) {
-        throw new Error('Carousel is sliding');
+      if (!this._isSliding) {
+        this._slide(Direction.PREVIOUS);
       }
-      this._slide(Direction.PREVIOUS);
     };
 
     Carousel.prototype.pause = function pause(event) {
@@ -157,7 +151,7 @@ var Carousel = function ($) {
       }
 
       if (this._config.interval && !this._isPaused) {
-        this._interval = setInterval((document.visibilityState ? this.nextWhenVisible : this.next).bind(this), this._config.interval);
+        this._interval = setInterval($.proxy(document.visibilityState ? this.nextWhenVisible : this.next, this), this._config.interval);
       }
     };
 
@@ -213,35 +207,27 @@ var Carousel = function ($) {
     };
 
     Carousel.prototype._addEventListeners = function _addEventListeners() {
-      var _this2 = this;
-
       if (this._config.keyboard) {
-        $(this._element).on(Event.KEYDOWN, function (event) {
-          return _this2._keydown(event);
-        });
+        $(this._element).on(Event.KEYDOWN, $.proxy(this._keydown, this));
       }
 
       if (this._config.pause === 'hover' && !('ontouchstart' in document.documentElement)) {
-        $(this._element).on(Event.MOUSEENTER, function (event) {
-          return _this2.pause(event);
-        }).on(Event.MOUSELEAVE, function (event) {
-          return _this2.cycle(event);
-        });
+        $(this._element).on(Event.MOUSEENTER, $.proxy(this.pause, this)).on(Event.MOUSELEAVE, $.proxy(this.cycle, this));
       }
     };
 
     Carousel.prototype._keydown = function _keydown(event) {
+      event.preventDefault();
+
       if (/input|textarea/i.test(event.target.tagName)) {
         return;
       }
 
       switch (event.which) {
         case ARROW_LEFT_KEYCODE:
-          event.preventDefault();
           this.prev();
           break;
         case ARROW_RIGHT_KEYCODE:
-          event.preventDefault();
           this.next();
           break;
         default:
@@ -271,10 +257,10 @@ var Carousel = function ($) {
       return itemIndex === -1 ? this._items[this._items.length - 1] : this._items[itemIndex];
     };
 
-    Carousel.prototype._triggerSlideEvent = function _triggerSlideEvent(relatedTarget, eventDirectionName) {
+    Carousel.prototype._triggerSlideEvent = function _triggerSlideEvent(relatedTarget, directionalClassname) {
       var slideEvent = $.Event(Event.SLIDE, {
         relatedTarget: relatedTarget,
-        direction: eventDirectionName
+        direction: directionalClassname
       });
 
       $(this._element).trigger(slideEvent);
@@ -295,33 +281,21 @@ var Carousel = function ($) {
     };
 
     Carousel.prototype._slide = function _slide(direction, element) {
-      var _this3 = this;
+      var _this2 = this;
 
       var activeElement = $(this._element).find(Selector.ACTIVE_ITEM)[0];
       var nextElement = element || activeElement && this._getItemByDirection(direction, activeElement);
 
       var isCycling = Boolean(this._interval);
 
-      var directionalClassName = void 0;
-      var orderClassName = void 0;
-      var eventDirectionName = void 0;
-
-      if (direction === Direction.NEXT) {
-        directionalClassName = ClassName.LEFT;
-        orderClassName = ClassName.NEXT;
-        eventDirectionName = Direction.LEFT;
-      } else {
-        directionalClassName = ClassName.RIGHT;
-        orderClassName = ClassName.PREV;
-        eventDirectionName = Direction.RIGHT;
-      }
+      var directionalClassName = direction === Direction.NEXT ? ClassName.LEFT : ClassName.RIGHT;
 
       if (nextElement && $(nextElement).hasClass(ClassName.ACTIVE)) {
         this._isSliding = false;
         return;
       }
 
-      var slideEvent = this._triggerSlideEvent(nextElement, eventDirectionName);
+      var slideEvent = this._triggerSlideEvent(nextElement, directionalClassName);
       if (slideEvent.isDefaultPrevented()) {
         return;
       }
@@ -341,12 +315,12 @@ var Carousel = function ($) {
 
       var slidEvent = $.Event(Event.SLID, {
         relatedTarget: nextElement,
-        direction: eventDirectionName
+        direction: directionalClassName
       });
 
       if (Util.supportsTransitionEnd() && $(this._element).hasClass(ClassName.SLIDE)) {
 
-        $(nextElement).addClass(orderClassName);
+        $(nextElement).addClass(direction);
 
         Util.reflow(nextElement);
 
@@ -354,14 +328,16 @@ var Carousel = function ($) {
         $(nextElement).addClass(directionalClassName);
 
         $(activeElement).one(Util.TRANSITION_END, function () {
-          $(nextElement).removeClass(directionalClassName + ' ' + orderClassName).addClass(ClassName.ACTIVE);
+          $(nextElement).removeClass(directionalClassName).removeClass(direction);
 
-          $(activeElement).removeClass(ClassName.ACTIVE + ' ' + orderClassName + ' ' + directionalClassName);
+          $(nextElement).addClass(ClassName.ACTIVE);
 
-          _this3._isSliding = false;
+          $(activeElement).removeClass(ClassName.ACTIVE).removeClass(direction).removeClass(directionalClassName);
+
+          _this2._isSliding = false;
 
           setTimeout(function () {
-            return $(_this3._element).trigger(slidEvent);
+            return $(_this2._element).trigger(slidEvent);
           }, 0);
         }).emulateTransitionEnd(TRANSITION_DURATION);
       } else {

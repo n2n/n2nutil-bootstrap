@@ -4,7 +4,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-alpha.6): dropdown.js
+ * Bootstrap (v4.0.0-alpha.5): dropdown.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
@@ -18,7 +18,7 @@ var Dropdown = function ($) {
    */
 
   var NAME = 'dropdown';
-  var VERSION = '4.0.0-alpha.6';
+  var VERSION = '4.0.0-alpha.5';
   var DATA_KEY = 'bs.dropdown';
   var EVENT_KEY = '.' + DATA_KEY;
   var DATA_API_KEY = '.data-api';
@@ -35,14 +35,13 @@ var Dropdown = function ($) {
     SHOWN: 'shown' + EVENT_KEY,
     CLICK: 'click' + EVENT_KEY,
     CLICK_DATA_API: 'click' + EVENT_KEY + DATA_API_KEY,
-    FOCUSIN_DATA_API: 'focusin' + EVENT_KEY + DATA_API_KEY,
     KEYDOWN_DATA_API: 'keydown' + EVENT_KEY + DATA_API_KEY
   };
 
   var ClassName = {
     BACKDROP: 'dropdown-backdrop',
     DISABLED: 'disabled',
-    SHOW: 'show'
+    OPEN: 'open'
   };
 
   var Selector = {
@@ -80,7 +79,7 @@ var Dropdown = function ($) {
       }
 
       var parent = Dropdown._getParentFromElement(this);
-      var isActive = $(parent).hasClass(ClassName.SHOW);
+      var isActive = $(parent).hasClass(ClassName.OPEN);
 
       Dropdown._clearMenus();
 
@@ -97,9 +96,7 @@ var Dropdown = function ($) {
         $(dropdown).on('click', Dropdown._clearMenus);
       }
 
-      var relatedTarget = {
-        relatedTarget: this
-      };
+      var relatedTarget = { relatedTarget: this };
       var showEvent = $.Event(Event.SHOW, relatedTarget);
 
       $(parent).trigger(showEvent);
@@ -109,9 +106,9 @@ var Dropdown = function ($) {
       }
 
       this.focus();
-      this.setAttribute('aria-expanded', true);
+      this.setAttribute('aria-expanded', 'true');
 
-      $(parent).toggleClass(ClassName.SHOW);
+      $(parent).toggleClass(ClassName.OPEN);
       $(parent).trigger($.Event(Event.SHOWN, relatedTarget));
 
       return false;
@@ -136,8 +133,7 @@ var Dropdown = function ($) {
         var data = $(this).data(DATA_KEY);
 
         if (!data) {
-          data = new Dropdown(this);
-          $(this).data(DATA_KEY, data);
+          $(this).data(DATA_KEY, data = new Dropdown(this));
         }
 
         if (typeof config === 'string') {
@@ -163,15 +159,13 @@ var Dropdown = function ($) {
 
       for (var i = 0; i < toggles.length; i++) {
         var parent = Dropdown._getParentFromElement(toggles[i]);
-        var relatedTarget = {
-          relatedTarget: toggles[i]
-        };
+        var relatedTarget = { relatedTarget: toggles[i] };
 
-        if (!$(parent).hasClass(ClassName.SHOW)) {
+        if (!$(parent).hasClass(ClassName.OPEN)) {
           continue;
         }
 
-        if (event && (event.type === 'click' && /input|textarea/i.test(event.target.tagName) || event.type === 'focusin') && $.contains(parent, event.target)) {
+        if (event && event.type === 'click' && /input|textarea/i.test(event.target.tagName) && $.contains(parent, event.target)) {
           continue;
         }
 
@@ -183,7 +177,7 @@ var Dropdown = function ($) {
 
         toggles[i].setAttribute('aria-expanded', 'false');
 
-        $(parent).removeClass(ClassName.SHOW).trigger($.Event(Event.HIDDEN, relatedTarget));
+        $(parent).removeClass(ClassName.OPEN).trigger($.Event(Event.HIDDEN, relatedTarget));
       }
     };
 
@@ -211,7 +205,7 @@ var Dropdown = function ($) {
       }
 
       var parent = Dropdown._getParentFromElement(this);
-      var isActive = $(parent).hasClass(ClassName.SHOW);
+      var isActive = $(parent).hasClass(ClassName.OPEN);
 
       if (!isActive && event.which !== ESCAPE_KEYCODE || isActive && event.which === ESCAPE_KEYCODE) {
 
@@ -224,7 +218,11 @@ var Dropdown = function ($) {
         return;
       }
 
-      var items = $(parent).find(Selector.VISIBLE_ITEMS).get();
+      var items = $.makeArray($(Selector.VISIBLE_ITEMS));
+
+      items = items.filter(function (item) {
+        return item.offsetWidth || item.offsetHeight;
+      });
 
       if (!items.length) {
         return;
@@ -265,7 +263,7 @@ var Dropdown = function ($) {
    * ------------------------------------------------------------------------
    */
 
-  $(document).on(Event.KEYDOWN_DATA_API, Selector.DATA_TOGGLE, Dropdown._dataApiKeydownHandler).on(Event.KEYDOWN_DATA_API, Selector.ROLE_MENU, Dropdown._dataApiKeydownHandler).on(Event.KEYDOWN_DATA_API, Selector.ROLE_LISTBOX, Dropdown._dataApiKeydownHandler).on(Event.CLICK_DATA_API + ' ' + Event.FOCUSIN_DATA_API, Dropdown._clearMenus).on(Event.CLICK_DATA_API, Selector.DATA_TOGGLE, Dropdown.prototype.toggle).on(Event.CLICK_DATA_API, Selector.FORM_CHILD, function (e) {
+  $(document).on(Event.KEYDOWN_DATA_API, Selector.DATA_TOGGLE, Dropdown._dataApiKeydownHandler).on(Event.KEYDOWN_DATA_API, Selector.ROLE_MENU, Dropdown._dataApiKeydownHandler).on(Event.KEYDOWN_DATA_API, Selector.ROLE_LISTBOX, Dropdown._dataApiKeydownHandler).on(Event.CLICK_DATA_API, Dropdown._clearMenus).on(Event.CLICK_DATA_API, Selector.DATA_TOGGLE, Dropdown.prototype.toggle).on(Event.CLICK_DATA_API, Selector.FORM_CHILD, function (e) {
     e.stopPropagation();
   });
 

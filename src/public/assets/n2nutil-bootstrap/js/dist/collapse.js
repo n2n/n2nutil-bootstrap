@@ -6,7 +6,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v4.0.0-alpha.6): collapse.js
+ * Bootstrap (v4.0.0-alpha.5): collapse.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * --------------------------------------------------------------------------
  */
@@ -20,7 +20,7 @@ var Collapse = function ($) {
    */
 
   var NAME = 'collapse';
-  var VERSION = '4.0.0-alpha.6';
+  var VERSION = '4.0.0-alpha.5';
   var DATA_KEY = 'bs.collapse';
   var EVENT_KEY = '.' + DATA_KEY;
   var DATA_API_KEY = '.data-api';
@@ -46,7 +46,7 @@ var Collapse = function ($) {
   };
 
   var ClassName = {
-    SHOW: 'show',
+    IN: 'in',
     COLLAPSE: 'collapse',
     COLLAPSING: 'collapsing',
     COLLAPSED: 'collapsed'
@@ -58,7 +58,7 @@ var Collapse = function ($) {
   };
 
   var Selector = {
-    ACTIVES: '.card > .show, .card > .collapsing',
+    ACTIVES: '.card > .in, .card > .collapsing',
     DATA_TOGGLE: '[data-toggle="collapse"]'
   };
 
@@ -93,7 +93,7 @@ var Collapse = function ($) {
     // public
 
     Collapse.prototype.toggle = function toggle() {
-      if ($(this._element).hasClass(ClassName.SHOW)) {
+      if ($(this._element).hasClass(ClassName.IN)) {
         this.hide();
       } else {
         this.show();
@@ -103,11 +103,7 @@ var Collapse = function ($) {
     Collapse.prototype.show = function show() {
       var _this = this;
 
-      if (this._isTransitioning) {
-        throw new Error('Collapse is transitioning');
-      }
-
-      if ($(this._element).hasClass(ClassName.SHOW)) {
+      if (this._isTransitioning || $(this._element).hasClass(ClassName.IN)) {
         return;
       }
 
@@ -115,7 +111,7 @@ var Collapse = function ($) {
       var activesData = void 0;
 
       if (this._parent) {
-        actives = $.makeArray($(this._parent).find(Selector.ACTIVES));
+        actives = $.makeArray($(Selector.ACTIVES));
         if (!actives.length) {
           actives = null;
         }
@@ -155,7 +151,7 @@ var Collapse = function ($) {
       this.setTransitioning(true);
 
       var complete = function complete() {
-        $(_this._element).removeClass(ClassName.COLLAPSING).addClass(ClassName.COLLAPSE).addClass(ClassName.SHOW);
+        $(_this._element).removeClass(ClassName.COLLAPSING).addClass(ClassName.COLLAPSE).addClass(ClassName.IN);
 
         _this._element.style[dimension] = '';
 
@@ -180,11 +176,7 @@ var Collapse = function ($) {
     Collapse.prototype.hide = function hide() {
       var _this2 = this;
 
-      if (this._isTransitioning) {
-        throw new Error('Collapse is transitioning');
-      }
-
-      if (!$(this._element).hasClass(ClassName.SHOW)) {
+      if (this._isTransitioning || !$(this._element).hasClass(ClassName.IN)) {
         return;
       }
 
@@ -201,7 +193,7 @@ var Collapse = function ($) {
 
       Util.reflow(this._element);
 
-      $(this._element).addClass(ClassName.COLLAPSING).removeClass(ClassName.COLLAPSE).removeClass(ClassName.SHOW);
+      $(this._element).addClass(ClassName.COLLAPSING).removeClass(ClassName.COLLAPSE).removeClass(ClassName.IN);
 
       this._element.setAttribute('aria-expanded', false);
 
@@ -269,7 +261,7 @@ var Collapse = function ($) {
 
     Collapse.prototype._addAriaAndCollapsedClass = function _addAriaAndCollapsedClass(element, triggerArray) {
       if (element) {
-        var isOpen = $(element).hasClass(ClassName.SHOW);
+        var isOpen = $(element).hasClass(ClassName.IN);
         element.setAttribute('aria-expanded', isOpen);
 
         if (triggerArray.length) {
