@@ -1,33 +1,33 @@
 {
-	"name" : "n2n/n2nutil-bootstrap",
-	"minimum-stability" : "dev",
-	"type" : "n2n-module",
-	"description" : "boostrap utils for n2n",
-	"keywords" : [
-		"n2n",
-		"boostrap"
-	],
-	"homepage" : "https://n2n.rocks/",
-	"license" : "LGPL-3.0-or-later",
-	"authors" : [
-		{
-			"name" : "Thomas Jansen",
-			"email" : "jansen@hnm.ch"
-		},
-		{
-			"name" : "Thomas Günther",
-			"email" : "guenther@hnm.ch"
-		}
-	],
-	"require" : {
-		"php": ">=7.0",
-		"n2n/n2n-composer-module-installer": "7.1.x-dev",
-		"n2n/n2n-web": "^7.1.0",
-		"n2n/n2nutil-jquery": "^1.1.0"
-	},
-	"autoload" : {
-		"psr-4" : {
-			"n2nutil\\bootstrap\\" : "src/app/n2nutil/bootstrap"
-		}
-	}
+    "authors": [
+        {
+            "email": "jansen@hnm.ch",
+            "name": "Thomas Jansen"
+        },
+        {
+            "email": "guenther@hnm.ch",
+            "name": "Thomas G\u00fcnther"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "n2nutil\\bootstrap\\": "src/app/n2nutil/bootstrap"
+        }
+    },
+    "description": "boostrap utils for n2n",
+    "homepage": "https://n2n.rocks/",
+    "keywords": [
+        "n2n",
+        "boostrap"
+    ],
+    "license": "LGPL-3.0-or-later",
+    "minimum-stability": "dev",
+    "name": "n2n/n2nutil-bootstrap",
+    "require": {
+        "n2n/n2n-composer-module-installer": "~7.1.1",
+        "n2n/n2n-web": "^7.2.0",
+        "n2n/n2nutil-jquery": "^1.2.1",
+        "php": ">=7.0"
+    },
+    "type": "n2n-module"
 }
