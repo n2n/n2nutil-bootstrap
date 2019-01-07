@@ -8,7 +8,7 @@ use n2nutil\jquery\JQueryLibrary;
 
 class BootstrapLibrary  extends LibraryAdapter {
 	
-	const VERSION = '4.1.3';
+	const VERSION = '4.2.1';
 	
 	private $loadBootstrapCss;
 	private $loadJs;
@@ -34,7 +34,6 @@ class BootstrapLibrary  extends LibraryAdapter {
 			if ($this->bodyEnd) {
 				$htmlMeta = $htmlMeta->bodyEnd();
 			}
-			$htmlMeta->addJs('assets/js/vendor/popper.min.js', 'n2nutil\bootstrap');
 			$htmlMeta->addJs('dist/js/bootstrap.min.js', 'n2nutil\bootstrap');
 		}
 	}
