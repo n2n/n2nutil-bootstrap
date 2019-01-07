@@ -3,7 +3,7 @@ namespace n2nutil\bootstrap\img;
 
 use n2n\impl\web\ui\view\html\img\ImgComposer;
 use n2n\impl\web\ui\view\html\img\ProportionalImgComposer;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 use n2n\io\managed\File;

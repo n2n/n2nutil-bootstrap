@@ -15,7 +15,7 @@ use n2nutil\bootstrap\mag\OutfitComposer;
 use n2nutil\bootstrap\mag\BsUiOutfitter;
 use n2nutil\bootstrap\mag\OutfitConfig;
 use n2nutil\jquery\datepicker\DatePickerHtmlBuilder;
-use n2n\reflection\ArgUtils;
+use n2n\util\type\ArgUtils;
 use n2n\web\ui\Raw;
 
 class BsFormHtmlBuilder {
