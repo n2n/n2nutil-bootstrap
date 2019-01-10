@@ -341,7 +341,7 @@ class BsFormHtmlBuilder {
 	public function getCustomGroup(UiComponent $uiControl, $propertyExpression, BsComposer $bsComposer = null, $label = null) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
-		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
+// 		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
 		
 		return $this->createUiFormGroup($propertyPath,
 				$this->createUiLabel($propertyPath, $bsConfig, $label),
