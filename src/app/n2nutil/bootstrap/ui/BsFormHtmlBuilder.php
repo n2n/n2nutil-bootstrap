@@ -70,7 +70,7 @@ class BsFormHtmlBuilder {
 		return $uiOpen;
 	}
 	
-	private function buildFormAttrs(Dispatchable $dispatchableObject, array $attrs = null) {
+	protected function buildFormAttrs(Dispatchable $dispatchableObject, array $attrs = null) {
 		//@todo: das dispatchable übergeben sonst exception
 		return $attrs;
 		if (!$this->formHtml->meta()->isDispatched()) return $attrs;
@@ -82,7 +82,7 @@ class BsFormHtmlBuilder {
 		$this->formHtml->close();
 	}
 	
-	private function createPropertyPath($propertyExpression) {
+	protected function createPropertyPath($propertyExpression) {
 		return $this->formHtml->meta()->createPropertyPath($propertyExpression, true);
 	}
 
@@ -90,7 +90,7 @@ class BsFormHtmlBuilder {
 	 * @param null $bsComposer
 	 * @return BsComposer|BsConfig|null
 	 */
-	private function createBsConfig($bsComposer = null) {
+	protected function createBsConfig($bsComposer = null) {
 		if ($bsComposer instanceof BsComposer) {
 			return $bsComposer->toBsConfig($this->globalBsConfig);
 		}
@@ -222,7 +222,7 @@ class BsFormHtmlBuilder {
 				$this->createUiInputCheckboxCheck($propertyPath, $value, $bsConfig), $bsConfig);
 	}
 	
-	private function createUiInputCheckboxCheck(PropertyPath $propertyPath, $value, BsConfig $bsConfig, $label = null) {
+	protected function createUiInputCheckboxCheck(PropertyPath $propertyPath, $value, BsConfig $bsConfig, $label = null) {
 		ArgUtils::valType($label, array('string', UiComponent::class), true, 'label');
 		
 		$controlAttrs = $this->createFormCheckInputAttrs($propertyPath, $bsConfig);
@@ -254,7 +254,7 @@ class BsFormHtmlBuilder {
 		return $this->createUiRadiosCheck($propertyExpression, $options, $bsComposer, $label, true);
 	}
 	
-	private function createUiRadiosCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label, bool $inline) {
+	protected function createUiRadiosCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label, bool $inline) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		
@@ -289,7 +289,7 @@ class BsFormHtmlBuilder {
 		return $this->createUiCheckboxesCheck($propertyExpression, $options, $bsComposer, $label, true);
 	}
 	
-	private function createUiCheckboxesCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label, bool $inline) {
+	protected function createUiCheckboxesCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label, bool $inline) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 	
@@ -365,7 +365,7 @@ class BsFormHtmlBuilder {
 				$bsConfig);
 	}
 	
-	private function createUiFormCheck(PropertyPath $propertyPath, BsConfig $bsConfig, 
+	protected function createUiFormCheck(PropertyPath $propertyPath, BsConfig $bsConfig, 
 			UiComponent $label = null, UiComponent $uiControl, bool $displayErrors, bool $inline, 
 			PropertyPath $errPropertyPath = null) {
 		$uiFormCheck = new HtmlSnippet($uiControl);
@@ -382,7 +382,7 @@ class BsFormHtmlBuilder {
 		return new HtmlElement('div', array('class' => 'form-check' . ($inline ? ' form-check-inline' : '')), $uiFormCheck);
 	}
 	
-	private function buildFormCheckLabelAttrs(BsConfig $bsConfig) {
+	protected function buildFormCheckLabelAttrs(BsConfig $bsConfig) {
 		return HtmlUtils::mergeAttrs($bsConfig->getLabelAttrs(), array('class' => 'form-check-label'));
 	}
 
@@ -394,7 +394,7 @@ class BsFormHtmlBuilder {
 	 * @param bool $fieldset
 	 * @return HtmlElement
 	 */
-	private function createUiFormGroup(PropertyPath $propertyPath = null, UiComponent $uiLabel = null,
+	protected function createUiFormGroup(PropertyPath $propertyPath = null, UiComponent $uiLabel = null,
 			UiComponent $uiControl, BsConfig $bsConfig, bool $fieldset = false) {
 		$rowClassNames = $bsConfig->getRowClassNames();
 		$groupAttrs = $bsConfig->getGroupAttrs();
@@ -457,7 +457,7 @@ class BsFormHtmlBuilder {
 		return $uiContainer;
 	}
 	
-	private function createUiLegend(PropertyPath $propertyPath, BsConfig $bsConfig, string $label = null) {
+	protected function createUiLegend(PropertyPath $propertyPath, BsConfig $bsConfig, string $label = null) {
 		if ($label === null) {
 			$label = $this->formHtml->meta()->getLabel($propertyPath);
 		}
@@ -471,7 +471,7 @@ class BsFormHtmlBuilder {
 		return new HtmlElement('legend', $this->createLabelAttrs($bsConfig, 'col-form-label'), $label);
 	}
 	
-	private function createUiLabel(PropertyPath $propertyPath = null, BsConfig $bsConfig, $label, bool $applyFor = true, string $className = null) {
+	protected function createUiLabel(PropertyPath $propertyPath = null, BsConfig $bsConfig, $label, bool $applyFor = true, string $className = null) {
 		if (null === $className && null !== $bsConfig->getRowClassNames()) {
 			$className = 'col-form-label';
 		}
@@ -494,7 +494,7 @@ class BsFormHtmlBuilder {
 		return new HtmlElement('label', $this->createLabelAttrs($bsConfig, $className), $label);
 	}
 	
-	private function createLabelAttrs(BsConfig $bsConfig, string $className = null) {
+	protected function createLabelAttrs(BsConfig $bsConfig, string $className = null) {
 		$rowClassNames = $bsConfig->getRowClassNames();
 		$attrs = $bsConfig->getLabelAttrs();
 		
@@ -518,7 +518,7 @@ class BsFormHtmlBuilder {
 		return HtmlUtils::mergeAttrs($attrs, array('class' => implode(' ', $classNames)));
 	}
 	
-	private function createFormCheckInputAttrs(PropertyPath $propertyPath, BsConfig $bsConfig) {
+	protected function createFormCheckInputAttrs(PropertyPath $propertyPath, BsConfig $bsConfig) {
 		$attrs = $bsConfig->getControlAttrs();
 		
 		$className = 'form-check-input';
@@ -529,7 +529,7 @@ class BsFormHtmlBuilder {
 		return HtmlUtils::mergeAttrs($attrs, array('class' => $className), true);
 	}
 	
-	private function createFormControlAttrs(PropertyPath $propertyPath, BsConfig $bsConfig, 
+	protected function createFormControlAttrs(PropertyPath $propertyPath, BsConfig $bsConfig, 
 			array $additionalAttrs = null, string $className = null, $applyPlaceholder = true) {
 		$attrs = $bsConfig->getControlAttrs();
 		
@@ -562,7 +562,7 @@ class BsFormHtmlBuilder {
 	
 	private $ids = array();
 	
-	private function buildHelpTextId(PropertyPath $propertyPath) {
+	protected function buildHelpTextId(PropertyPath $propertyPath) {
 		$key = (string) $propertyPath;
 		if (isset($this->ids[$key])) {
 			return $this->ids[$key];
