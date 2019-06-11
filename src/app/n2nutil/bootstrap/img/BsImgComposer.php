@@ -85,6 +85,16 @@ class BsImgComposer implements ImgComposer {
 		$this->assign('xl', $arg);
 		return $this;
 	}
+	
+	/**
+	 * @param string $name
+	 * @param int $width
+	 * @return \n2nutil\bootstrap\img\BsImgComposer
+	 */
+	public function bp(string $name, int $width) {
+		$this->assign($name, $width);
+		return $this;
+	}
 
 	private function getBpWidth($bpName) {
 		return $this->bootstrapConfig->getBreakpointValueByName($bpName);
