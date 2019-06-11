@@ -20,7 +20,7 @@ class BsImgComposer implements ImgComposer {
 	/**
 	 * @var BootstrapConfig
 	 */
-	private $boostrapConfig;
+	private $bootstrapConfig;
 	private $pics;
 	private $widths = array();
 
@@ -126,7 +126,7 @@ class BsImgComposer implements ImgComposer {
 		$curSizes = array($curBaseWidth . 'px');
 		$curMediaAttr = null;
 
-		foreach (array('sm', 'md', 'lg', 'xl') as $bpName) {
+		foreach ($this->bootstrapConfig->getBreakpointNames() as $bpName) {
 			if (isset($this->widths[$bpName])) {
 				foreach ($curWidths as $curWidth) {
 					$curPic->widths(round($curWidth / $curBaseWidth * $this->widths[$bpName]));

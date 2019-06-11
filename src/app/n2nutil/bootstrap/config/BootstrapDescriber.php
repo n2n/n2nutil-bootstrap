@@ -81,7 +81,7 @@ class BootstrapDescriber extends ConfigDescriberAdapter {
 				continue;
 			}
 			
-			$breakpoints[$breakpointValues['name']] = $breakpointValues['value'];
+			$breakpoints[$breakpointValues['name']] = (int) $breakpointValues['value'];
 		}
 		
 		$this->writeCustomAttributes(new Attributes([self::ATTR_BREAKPOINTS_KEY => $breakpoints]));
@@ -94,7 +94,7 @@ class BootstrapDescriber extends ConfigDescriberAdapter {
 	public function buildCustomConfig() {
 		$attributes = $this->readCustomAttributes();
 		
-		$breakpoints = $attributes->getArray(self::ATTR_BREAKPOINTS_KEY, false, [], 'numeric');
+		$breakpoints = $attributes->optArray(self::ATTR_BREAKPOINTS_KEY, 'numeric', []);
 		if (empty($breakpoints)) {
 			return BootstrapConfig::getDefault();
 		}

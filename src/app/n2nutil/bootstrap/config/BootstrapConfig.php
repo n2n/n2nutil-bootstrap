@@ -15,10 +15,25 @@ class BootstrapConfig {
 		$this->breakpoints = $breakpoints;
 	}
 	
+	/**
+	 * @return int[]
+	 */
 	function getBreakpoints() {
 		return $this->breakpoints;
 	}
 	
+	/**
+	 * @return string[]
+	 */
+	function getBreakpointNames() {
+		return array_keys($this->breakpoints);
+	}
+	
+	/**
+	 * @param string $name
+	 * @throws UnknownBreakpointException
+	 * @return int
+	 */
 	function getBreakpointValueByName(string $name) {
 		if (isset($this->breakpoints[$name])) {
 			return $this->breakpoints[$name];
