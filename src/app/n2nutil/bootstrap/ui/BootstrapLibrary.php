@@ -7,8 +7,8 @@ use n2n\impl\web\ui\view\html\HtmlBuilderMeta;
 use n2nutil\jquery\JQueryLibrary;
 
 class BootstrapLibrary  extends LibraryAdapter {
-	
-	const VERSION = '4.3.1.1';
+	// main and side version number is synchronized with the bootstrap version
+	const VERSION = '4.3.2';
 	
 	private $loadBootstrapCss;
 	private $loadJs;
