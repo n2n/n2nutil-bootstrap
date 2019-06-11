@@ -4,22 +4,29 @@ namespace n2nutil\bootstrap\img;
 use n2n\impl\web\ui\view\html\img\ImgComposer;
 use n2n\impl\web\ui\view\html\img\ProportionalImgComposer;
 use n2n\util\type\ArgUtils;
-use n2n\util\ex\IllegalStateException;
 use n2n\core\container\N2nContext;
 use n2n\io\managed\File;
 use n2n\impl\web\ui\view\html\img\ImgSet;
+use n2nutil\bootstrap\config\BootstrapConfig;
 
 class BsImgComposer implements ImgComposer {
-	const BP_SM = 576;
-	const BP_MD = 768;
-	const BP_LG = 992;
-	const BP_XL = 1200;
+// 	const BP_SM = 576;
+// 	const BP_MD = 768;
+// 	const BP_LG = 992;
+// 	const BP_XL = 1200;
 
+	const RESERVED_BP = 'xs';
+	
+	/**
+	 * @var BootstrapConfig
+	 */
+	private $boostrapConfig;
 	private $pics;
 	private $widths = array();
 
-	public function __construct(ProportionalImgComposer $xsPic) {
-		$this->pics = array('xs' => $xsPic);
+	public function __construct(ProportionalImgComposer $xsPic, BootstrapConfig $bootstrapConfig) {
+		$this->bootstrapConfig = $bootstrapConfig;
+		$this->pics = array(self::RESERVED_BP => $xsPic);
 	}
 
 	private function assign($bpName, $arg) {
@@ -80,18 +87,20 @@ class BsImgComposer implements ImgComposer {
 	}
 
 	private function getBpWidth($bpName) {
-		switch ($bpName) {
-			case 'sm':
-				return self::BP_SM;
-			case 'md':
-				return self::BP_MD;
-			case 'lg':
-				return self::BP_LG;
-			case 'xl':
-				return self::BP_XL;
-			default:
-				throw new IllegalStateException();
-		}
+		return $this->bootstrapConfig->getBreakpointValueByName($bpName);
+		
+// 		switch ($bpName) {
+// 			case 'sm':
+// 				return self::BP_SM;
+// 			case 'md':
+// 				return self::BP_MD;
+// 			case 'lg':
+// 				return self::BP_LG;
+// 			case 'xl':
+// 				return self::BP_XL;
+// 			default:
+// 				throw new IllegalStateException();
+// 		}
 	}
 
 	/**
