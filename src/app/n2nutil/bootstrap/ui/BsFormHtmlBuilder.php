@@ -157,7 +157,7 @@ class BsFormHtmlBuilder {
 		return $this->createUiFormGroup($propertyPath,
 				$this->createUiLabel($propertyPath, $bsConfig, $label),
 				$this->ariaFormHtml->getSelect($propertyPath, $options, $bsConfig->isRequired(), $controlAttrs, $multiple),
-				$bsConfig, true);
+				$bsConfig, false);
 	}
 	
 	public function datePickerGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null) {
