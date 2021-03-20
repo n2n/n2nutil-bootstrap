@@ -8,21 +8,19 @@
 	],
 	"homepage" : "https://n2n.rocks/",
 	"license" : "LGPL-3.0-or-later",
-	"authors" : [
-		{
+	"authors" : [{
 			"name" : "Thomas Jansen",
 			"email" : "jansen@hnm.ch"
-		},
-		{
+		}, {
 			"name" : "Thomas Günther",
 			"email" : "guenther@hnm.ch"
 		}
 	],
 	"require" : {
 		"php" : ">=7.0",
-		"n2n/n2n-composer-module-installer" : "master-dev",
-		"n2n/n2n-web" : "master-dev",
-		"n2n/n2nutil-jquery" : "master-dev"
+		"n2n/n2n-composer-module-installer" : "^7.1",
+		"n2n/n2n-web" : "^7.2.33",
+		"n2n/n2nutil-jquery" : "^1.2.6"
 	},
 	"autoload" : {
 		"psr-4" : {
