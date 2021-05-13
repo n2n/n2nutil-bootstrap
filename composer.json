@@ -18,13 +18,21 @@
 	],
 	"require" : {
 		"php" : ">=7.0",
-		"n2n/n2n-composer-module-installer" : "^7.1",
+		"n2n/n2n-composer-module-installer" : "^7.1.3",
 		"n2n/n2n-web" : "^7.2.33",
 		"n2n/n2nutil-jquery" : "^1.2.6"
+	},
+	"require-dev" : {
+		"phpunit/phpunit" : "^9.5"
 	},
 	"autoload" : {
 		"psr-4" : {
 			"n2nutil\\bootstrap\\" : "src/app/n2nutil/bootstrap"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"n2nutil\\bootstrap\\" : "src/test/n2nutil/bootstrap"
 		}
 	}
 }
