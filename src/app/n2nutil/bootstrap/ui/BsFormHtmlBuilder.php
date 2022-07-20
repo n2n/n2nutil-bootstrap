@@ -32,11 +32,11 @@ class BsFormHtmlBuilder {
 	 * @param HtmlView $view
 	 * @param BsComposer|BsConfig|null $bsComposer
 	 */
-	public function __construct(HtmlView $view, $bsComposer = null) {
+	public function __construct(HtmlView $view, $bsComposer = null, $addDatepickerCss = true) {
 		$this->view = $view;
 		$this->formHtml = $view->getFormHtmlBuilder();
 		$this->ariaFormHtml = $view->getAriaFormHtmlBuilder();
-		$this->datePickerHtml = new DatePickerHtmlBuilder($view);
+		$this->datePickerHtml = new DatePickerHtmlBuilder($view, $addDatepickerCss);
 
 		if (null === $bsComposer) return;
 
