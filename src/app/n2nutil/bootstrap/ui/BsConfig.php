@@ -13,8 +13,8 @@ class BsConfig {
 	protected $rowClassNames;
 	protected $child;
 
-	public function __construct(bool $required, bool $autoPlaceholder, string $placeholder = null,
-			$helpText = null, bool $labelHidden, array $labelAttrs, array $controlAttrs, array $groupAttrs,
+	public function __construct(bool $required, bool $autoPlaceholder, ?string $placeholder = null,
+			$helpText = null, bool $labelHidden = false, array $labelAttrs = null, array $controlAttrs = null, array $groupAttrs = null,
 			array $rowClassNames = null, BsComposer $child = null) {
 		$this->required = $required;
 		$this->autoPlaceholder = $autoPlaceholder;
