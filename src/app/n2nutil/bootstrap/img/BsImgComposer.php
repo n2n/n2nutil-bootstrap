@@ -117,7 +117,7 @@ class BsImgComposer implements ImgComposer {
 	 * {@inheritDoc}
 	 * @see \n2n\impl\web\ui\view\html\img\ImgComposer::createImgSet()
 	 */
-	public function createImgSet(?File $file = null, N2nContext $n2nContext): ImgSet {
+	public function createImgSet(?File $file, N2nContext $n2nContext): ImgSet {
 		$imgSets = array();
 
 		$curPic = $this->pics['xs']->copy();
