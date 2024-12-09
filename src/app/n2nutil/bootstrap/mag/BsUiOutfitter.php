@@ -120,7 +120,7 @@ class BsUiOutfitter implements UiOutfitter {
 		return new HtmlSnippet($contents);
 	}
 
-	public function createMagDispatchableView(?PropertyPath $propertyPath = null, HtmlView $contextView): UiComponent {
+	public function createMagDispatchableView(?PropertyPath $propertyPath, HtmlView $contextView): UiComponent {
 		$bsChild = $this->bsConfig->getChild();
 		$bs = (null !== $bsChild) ? $bsChild : $this->bsConfig;
 		
