@@ -6,7 +6,7 @@ class OutfitConfig {
 	private $specialAttrsArr;
 	private $child;
 
-	public function __construct(array $specialAttrs = null, $child = null) {
+	public function __construct(?array $specialAttrs = null, $child = null) {
 		$this->specialAttrsArr = $specialAttrs;
 		$this->child = $child;
 	}

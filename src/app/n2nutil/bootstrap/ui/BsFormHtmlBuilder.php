@@ -53,16 +53,16 @@ class BsFormHtmlBuilder {
 // 		$view->getHtmlBuilder()->meta()->addLibrary(new BootstrapLibrary());
 	}
 	
-	public function open(Dispatchable $dispatchableObject, string $enctype = null, $method = null, 
-			array $attrs = null, $action = null) {
+	public function open(Dispatchable $dispatchableObject, ?string $enctype = null, $method = null,
+			?array $attrs = null, $action = null) {
 		$this->inline = false;
 		
 		return $this->formHtml->open($dispatchableObject, $enctype, $method, 
 				$this->buildFormAttrs($dispatchableObject, $attrs), $action);
 	}
 	
-	public function openInline(Dispatchable $dispatchableObject, string $enctype = null, $method = null, 
-			array $attrs = null, $action = null) {
+	public function openInline(Dispatchable $dispatchableObject, ?string $enctype = null, $method = null,
+			?array $attrs = null, $action = null) {
 		$attrs = HtmlUtils::mergeAttrs(array('class' => 'form-inline'), $attrs);
 		$uiOpen = $this->open($dispatchableObject, $enctype, $method, 
 				$this->buildFormAttrs($dispatchableObject, $attrs), $action);
@@ -70,7 +70,7 @@ class BsFormHtmlBuilder {
 		return $uiOpen;
 	}
 	
-	protected function buildFormAttrs(Dispatchable $dispatchableObject, array $attrs = null) {
+	protected function buildFormAttrs(Dispatchable $dispatchableObject, ?array $attrs = null) {
 		//@todo: das dispatchable übergeben sonst exception
 		return $attrs;
 		if (!$this->formHtml->meta()->isDispatched()) return $attrs;
@@ -102,11 +102,11 @@ class BsFormHtmlBuilder {
 		return (new BsComposer())->toBsConfig();
 	}
 	
-	public function staticGroup($propertyExpression = null, $fixedValue = null, BsComposer $bsComposer = null, $label = null) {
+	public function staticGroup($propertyExpression = null, $fixedValue = null, ?BsComposer $bsComposer = null, $label = null) {
 		return $this->view->out($this->getStaticGroup($propertyExpression, $fixedValue, $bsComposer, $label));
 	}
 	
-	public function getStaticGroup($propertyExpression = null, $fixedValue = null, BsComposer $bsComposer = null, $label = null) {
+	public function getStaticGroup($propertyExpression = null, $fixedValue = null, ?BsComposer $bsComposer = null, $label = null) {
 		ArgUtils::assertTrue(null !== $propertyExpression || null !== $fixedValue);
 		$propertyPath = null;
 		$value = $fixedValue;
@@ -126,13 +126,13 @@ class BsFormHtmlBuilder {
 				$uiControl, $bsConfig);
 	}
 	
-	public function inputGroup($propertyExpression, BsComposer $bsComposer = null, $label = null, 
-			string $type = null) {
+	public function inputGroup($propertyExpression, ?BsComposer $bsComposer = null, $label = null,
+			?string $type = null) {
 		$this->view->out($this->getInputGroup($propertyExpression, $bsComposer, $label, $type));
 	}
 	
-	public function getInputGroup($propertyExpression, BsComposer $bsComposer = null, $label = null, 
-			string $type = null) {
+	public function getInputGroup($propertyExpression, ?BsComposer $bsComposer = null, $label = null,
+			?string $type = null) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
@@ -143,12 +143,12 @@ class BsFormHtmlBuilder {
 				$bsConfig);
 	}
 	
-	public function selectGroup($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null,
+	public function selectGroup($propertyExpression, array $options, ?BsComposer $bsComposer = null, $label = null,
 			bool $multiple = false) {
 		$this->view->out($this->getSelectGroup($propertyExpression, $options,$bsComposer, $label, $multiple));
 	}
 	
-	public function getSelectGroup($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null,
+	public function getSelectGroup($propertyExpression, array $options, ?BsComposer $bsComposer = null, $label = null,
 			bool $multiple = false) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
@@ -160,11 +160,11 @@ class BsFormHtmlBuilder {
 				$bsConfig, false);
 	}
 	
-	public function datePickerGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null) {
+	public function datePickerGroup($propertyExpression = null, ?BsComposer $bsComposer = null, $label = null) {
 		$this->view->out($this->getDatePickerGroup($propertyExpression, $bsComposer, $label));
 	}
 	
-	public function getDatePickerGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null) {
+	public function getDatePickerGroup($propertyExpression = null, ?BsComposer $bsComposer = null, $label = null) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
@@ -175,13 +175,13 @@ class BsFormHtmlBuilder {
 				$bsConfig);
 	}
 	
-	public function inputFileWithLabelGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null,
-			array $fileLabelAttrs = null) {
+	public function inputFileWithLabelGroup($propertyExpression = null, ?BsComposer $bsComposer = null, $label = null,
+			?array $fileLabelAttrs = null) {
 		$this->view->out($this->getInputFileWithLabelGroup($propertyExpression, $bsComposer, $label));
 	}
 	
-	public function getInputFileWithLabelGroup($propertyExpression = null, BsComposer $bsComposer = null, $label = null,
-			array $fileLabelAttrs = null) {
+	public function getInputFileWithLabelGroup($propertyExpression = null, ?BsComposer $bsComposer = null, $label = null,
+			?array $fileLabelAttrs = null) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig, null, 'form-control-file');
@@ -192,12 +192,12 @@ class BsFormHtmlBuilder {
 				$bsConfig);
 	}
 	
-	public function inputPasswordGroup($propertyExpression, BsComposer $bsComposer = null, $label = null, 
+	public function inputPasswordGroup($propertyExpression, ?BsComposer $bsComposer = null, $label = null,
 			bool $secret = true) {
 		$this->view->out($this->getInputPasswordGroup($propertyExpression, $bsComposer, $label, $secret));
 	}
 	
-	public function getInputPasswordGroup($propertyExpression, BsComposer $bsComposer = null, $label = null, 
+	public function getInputPasswordGroup($propertyExpression, ?BsComposer $bsComposer = null, $label = null,
 			bool $secret = true) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
@@ -210,11 +210,11 @@ class BsFormHtmlBuilder {
 				$bsConfig);
 	}
 
-	public function inputCheckboxCheck($propertyExpression, $value, BsComposer $bsComposer = null, $label = null) {
+	public function inputCheckboxCheck($propertyExpression, $value, ?BsComposer $bsComposer = null, $label = null) {
 		$this->view->out($this->getInputCheckboxCheck($propertyExpression, $value, $bsComposer, $label));
 	}
 	
-	public function getInputCheckboxCheck($propertyExpression, $value, BsComposer $bsComposer = null, $label = null) {
+	public function getInputCheckboxCheck($propertyExpression, $value, ?BsComposer $bsComposer = null, $label = null) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		
@@ -238,15 +238,15 @@ class BsFormHtmlBuilder {
 	}
 
 	
-	public function inputRadiosCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null) {
+	public function inputRadiosCheck($propertyExpression, array $options, ?BsComposer $bsComposer = null, $label = null) {
 		$this->view->out($this->getInputRadiosCheck($propertyExpression, $options, $bsComposer, $label));
 	}
 	
-	public function getInputRadiosCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null) {
+	public function getInputRadiosCheck($propertyExpression, array $options, ?BsComposer $bsComposer = null, $label = null) {
 		return $this->createUiRadiosCheck($propertyExpression, $options, $bsComposer, $label, false);
 	}
 	
-	public function inputRadiosCheckInline($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null) {
+	public function inputRadiosCheckInline($propertyExpression, array $options, ?BsComposer $bsComposer = null, $label = null) {
 		$this->view->out($this->getInputRadiosCheckInline($propertyExpression, $options, $bsComposer, $label));
 	}
 	
@@ -254,7 +254,7 @@ class BsFormHtmlBuilder {
 		return $this->createUiRadiosCheck($propertyExpression, $options, $bsComposer, $label, true);
 	}
 	
-	protected function createUiRadiosCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label, bool $inline) {
+	protected function createUiRadiosCheck($propertyExpression, array $options, ?BsComposer $bsComposer, $label, bool $inline) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		
@@ -273,15 +273,15 @@ class BsFormHtmlBuilder {
 		return $this->createUiFormGroup($propertyPath, $uiLegend, $uiControl, $bsConfig, false);
 	}
 	
-	public function inputCheckboxesCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null) {
+	public function inputCheckboxesCheck($propertyExpression, array $options, ?BsComposer $bsComposer = null, $label = null) {
 		$this->view->out($this->getInputCheckboxesCheck($propertyExpression, $options, $bsComposer, $label));
 	}
 	
-	public function getInputCheckboxesCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null) {
+	public function getInputCheckboxesCheck($propertyExpression, array $options, ?BsComposer $bsComposer = null, $label = null) {
 		return $this->createUiCheckboxesCheck($propertyExpression, $options, $bsComposer, $label, false);
 	}
 	
-	public function inputCheckboxesCheckInline($propertyExpression, array $options, BsComposer $bsComposer = null, $label = null) {
+	public function inputCheckboxesCheckInline($propertyExpression, array $options, ?BsComposer $bsComposer = null, $label = null) {
 		$this->view->out($this->getInputCheckboxesCheckInline($propertyExpression, $options, $bsComposer, $label));
 	}
 	
@@ -289,7 +289,7 @@ class BsFormHtmlBuilder {
 		return $this->createUiCheckboxesCheck($propertyExpression, $options, $bsComposer, $label, true);
 	}
 	
-	protected function createUiCheckboxesCheck($propertyExpression, array $options, BsComposer $bsComposer = null, $label, bool $inline) {
+	protected function createUiCheckboxesCheck($propertyExpression, array $options, ?BsComposer $bsComposer, $label, bool $inline) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 	
@@ -308,11 +308,11 @@ class BsFormHtmlBuilder {
 		return $this->createUiFormGroup($propertyPath, $uiLegend, $uiControl, $bsConfig, false);
 	}
 	
-	public function inputCheckboxGroup($propertyExpression, $value, $checkboxLabel = null, BsComposer $bsComposer = null, $label = null) {
+	public function inputCheckboxGroup($propertyExpression, $value, $checkboxLabel = null, ?BsComposer $bsComposer = null, $label = null) {
 		$this->view->out($this->getInputCheckboxGroup($propertyExpression, $value, $checkboxLabel, $bsComposer, $label));
 	}
 	
-	public function getInputCheckboxGroup($propertyExpression, $value, $checkboxLabel = null, BsComposer $bsComposer = null, $label = null) {
+	public function getInputCheckboxGroup($propertyExpression, $value, $checkboxLabel = null, ?BsComposer $bsComposer = null, $label = null) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		
@@ -323,11 +323,11 @@ class BsFormHtmlBuilder {
 				$bsConfig);
 	}
 	
-	public function textareaGroup($propertyExpression, BsComposer $bsComposer = null, $label = null) {
+	public function textareaGroup($propertyExpression, ?BsComposer $bsComposer = null, $label = null) {
 		$this->view->out($this->getTextarea($propertyExpression, $bsComposer, $label));
 	}
 	
-	public function getTextarea($propertyExpression, BsComposer $bsComposer = null, $label = null) {
+	public function getTextarea($propertyExpression, ?BsComposer $bsComposer = null, $label = null) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
@@ -338,7 +338,7 @@ class BsFormHtmlBuilder {
 				$bsConfig);
 	}
 	
-	public function getCustomGroup(UiComponent $uiControl, $propertyExpression, BsComposer $bsComposer = null, $label = null) {
+	public function getCustomGroup(UiComponent $uiControl, $propertyExpression, ?BsComposer $bsComposer = null, $label = null) {
 		$propertyPath = $this->createPropertyPath($propertyExpression);
 		$bsConfig = $this->createBsConfig($bsComposer);
 // 		$controlAttrs = $this->createFormControlAttrs($propertyPath, $bsConfig);
@@ -348,15 +348,15 @@ class BsFormHtmlBuilder {
 				$uiControl, $bsConfig);
 	}
 	
-	public function customGroup(UiComponent $uiControl, $propertyExpression, BsComposer $bsComposer = null, $label = null) {
+	public function customGroup(UiComponent $uiControl, $propertyExpression, ?BsComposer $bsComposer = null, $label = null) {
 		$this->view->out($this->getCustomGroup($uiControl, $propertyExpression, $bsComposer, $label));
 	}
 
-	public function buttonSubmitGroup($methodName = null, $label = null, BsComposer $bsComposer = null) {
+	public function buttonSubmitGroup($methodName = null, $label = null, ?BsComposer $bsComposer = null) {
 		$this->view->out($this->getButtonSubmitGroup($methodName, $label, $bsComposer));
 	}
 	
-	public function getButtonSubmitGroup($methodName = null, $label = null, BsComposer $bsComposer = null) {
+	public function getButtonSubmitGroup($methodName = null, $label = null, ?BsComposer $bsComposer = null) {
 		$bsConfig = $this->createBsConfig($bsComposer);
 		$controlAttrs = HtmlUtils::mergeAttrs(array('class' => 'btn btn-primary'), $bsConfig->getControlAttrs());
 		
@@ -366,8 +366,8 @@ class BsFormHtmlBuilder {
 	}
 	
 	protected function createUiFormCheck(PropertyPath $propertyPath, BsConfig $bsConfig, 
-			UiComponent $label = null, UiComponent $uiControl, bool $displayErrors, bool $inline, 
-			PropertyPath $errPropertyPath = null) {
+			?UiComponent $label, UiComponent $uiControl, bool $displayErrors, bool $inline,
+			?PropertyPath $errPropertyPath = null) {
 		$uiFormCheck = new HtmlSnippet($uiControl);
 		
 		if (null !== $label) {
@@ -394,7 +394,7 @@ class BsFormHtmlBuilder {
 	 * @param bool $fieldset
 	 * @return HtmlElement
 	 */
-	protected function createUiFormGroup(PropertyPath $propertyPath = null, UiComponent $uiLabel = null,
+	protected function createUiFormGroup(?PropertyPath $propertyPath, ?UiComponent $uiLabel,
 			UiComponent $uiControl, BsConfig $bsConfig, bool $fieldset = false) {
 		$rowClassNames = $bsConfig->getRowClassNames();
 		$groupAttrs = $bsConfig->getGroupAttrs();
@@ -457,7 +457,7 @@ class BsFormHtmlBuilder {
 		return $uiContainer;
 	}
 	
-	protected function createUiLegend(PropertyPath $propertyPath, BsConfig $bsConfig, string $label = null) {
+	protected function createUiLegend(PropertyPath $propertyPath, BsConfig $bsConfig, ?string $label = null) {
 		if ($label === null) {
 			$label = $this->formHtml->meta()->getLabel($propertyPath);
 		}
@@ -471,7 +471,7 @@ class BsFormHtmlBuilder {
 		return new HtmlElement('legend', $this->createLabelAttrs($bsConfig, 'col-form-label'), $label);
 	}
 	
-	protected function createUiLabel(PropertyPath $propertyPath = null, BsConfig $bsConfig, $label, bool $applyFor = true, string $className = null) {
+	protected function createUiLabel(?PropertyPath $propertyPath, BsConfig $bsConfig, $label, bool $applyFor = true, ?string $className = null) {
 		if (null === $className && null !== $bsConfig->getRowClassNames()) {
 			$className = 'col-form-label';
 		}
@@ -494,7 +494,7 @@ class BsFormHtmlBuilder {
 		return new HtmlElement('label', $this->createLabelAttrs($bsConfig, $className), $label);
 	}
 	
-	protected function createLabelAttrs(BsConfig $bsConfig, string $className = null) {
+	protected function createLabelAttrs(BsConfig $bsConfig, ?string $className = null) {
 		$rowClassNames = $bsConfig->getRowClassNames();
 		$attrs = $bsConfig->getLabelAttrs();
 		
@@ -530,7 +530,7 @@ class BsFormHtmlBuilder {
 	}
 	
 	protected function createFormControlAttrs(PropertyPath $propertyPath, BsConfig $bsConfig, 
-			array $additionalAttrs = null, string $className = null, $applyPlaceholder = true) {
+			?array $additionalAttrs = null, ?string $className = null, $applyPlaceholder = true) {
 		$attrs = $bsConfig->getControlAttrs();
 		
 		if ($additionalAttrs !== null) {
@@ -654,7 +654,7 @@ class BsFormHtmlBuilder {
 	}
 
 // 	public function getFormGroupWithCheckboxes($propertyExpression, array $options,
-// 			$label = null, $required = false, FormGroupConfig $formGroupConfig = null, $inline = false) {
+// 			$label = null, $required = false, ?FormGroupConfig $formGroupConfig = null, $inline = false) {
 // 				$controlRaw = '';
 // 				$controlAttrs = array('class' => 'control-label ' . ($inline ? 'checkbox-inline' : 'checkbox'));
 // 				foreach ($options as $value => $labelDesc) {
@@ -675,13 +675,13 @@ class BsFormHtmlBuilder {
 // 	}
 	
 // 	public function formGroupWithCheckboxes($propertyExpression, array $options, $label = null,
-// 			$required = false, FormGroupConfig $formGroupConfig = null, $inline = false) {
+// 			$required = false, ?FormGroupConfig $formGroupConfig = null, $inline = false) {
 // 				$this->view->out($this->getFormGroupWithCheckboxes($propertyExpression, $options, $label, $required,
 // 						$formGroupConfig, $inline));
 // 	}
 	
 // 	public function getFormGroupWithRadioButtons($propertyExpression, array $options,
-// 			$label = null, $required = false, FormGroupConfig $formGroupConfig = null, $inline = false) {
+// 			$label = null, $required = false, ?FormGroupConfig $formGroupConfig = null, $inline = false) {
 // 				$controlRaw = '';
 // 				$controlAttrs = array('class' => 'control-label ' . ($inline ? 'radio-inline' : 'radio'));
 // 				foreach ($options as $value => $labelDesc) {
@@ -702,7 +702,7 @@ class BsFormHtmlBuilder {
 // 	}
 	
 // 	public function formGroupWithRadioButtons($propertyExpression, array $options, $label = null,
-// 			$required = false, FormGroupConfig $formGroupConfig = null, $inline = false) {
+// 			$required = false, ?FormGroupConfig $formGroupConfig = null, $inline = false) {
 // 				$this->view->out($this->getFormGroupWithRadioButtons($propertyExpression, $options, $label, $required,
 // 						$formGroupConfig, $inline));
 // 	}
@@ -739,7 +739,7 @@ class BsFormHtmlBuilder {
 // 	}
 	
 // 	public function getFormGroupWithAutoCompletion($propertyExpression, $label = null,
-// 			array $options = null, $required = false, FormGroupConfig $formGroupConfig = null,
+// 			array $options = null, $required = false, ?FormGroupConfig $formGroupConfig = null,
 // 			$initialValueClosure = null) {
 	
 // 				$autoCompletionAttrs = array('class' => 'form-control');
@@ -762,7 +762,7 @@ class BsFormHtmlBuilder {
 // 	}
 	
 // 	public function formGroupWithAutocompletion($propertyExpression, $label = null,
-// 			array $options = null, $required = false, FormGroupConfig $formGroupConfig = null,
+// 			array $options = null, $required = false, ?FormGroupConfig $formGroupConfig = null,
 // 			$initialValueClosure = null) {
 // 				$this->view->out($this->getFormGroupWithAutoCompletion($propertyExpression, $label,
 // 						$options, $required, $formGroupConfig, $initialValueClosure));

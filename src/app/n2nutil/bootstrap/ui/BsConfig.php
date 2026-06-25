@@ -15,7 +15,7 @@ class BsConfig {
 
 	public function __construct(bool $required, bool $autoPlaceholder, ?string $placeholder,
 			?string $helpText, bool $labelHidden, array $labelAttrs, array $controlAttrs, array $groupAttrs,
-			array $rowClassNames = null, BsComposer $child = null) {
+			?array $rowClassNames = null, ?BsComposer $child = null) {
 		$this->required = $required;
 		$this->autoPlaceholder = $autoPlaceholder;
 		$this->placeholder = $placeholder;
