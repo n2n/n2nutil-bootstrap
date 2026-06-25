@@ -13,9 +13,9 @@ class BsConfig {
 	protected $rowClassNames;
 	protected $child;
 
-	public function __construct(bool $required, bool $autoPlaceholder, ?string $placeholder = null,
-			$helpText = null, bool $labelHidden = false, array $labelAttrs = null, array $controlAttrs = null, array $groupAttrs = null,
-			array $rowClassNames = null, BsComposer $child = null) {
+	public function __construct(bool $required, bool $autoPlaceholder, ?string $placeholder,
+			?string $helpText, bool $labelHidden = false, ?array $labelAttrs = null, ?array $controlAttrs = null, ?array $groupAttrs = null,
+			?array $rowClassNames = null, ?BsComposer $child = null) {
 		$this->required = $required;
 		$this->autoPlaceholder = $autoPlaceholder;
 		$this->placeholder = $placeholder;
